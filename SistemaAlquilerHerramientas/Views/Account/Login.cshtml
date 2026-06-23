@@ -1,0 +1,79 @@
+﻿@model LoginViewModel
+@{
+    ViewData["Title"] = "Iniciar Sesión";
+    Layout = null; // Sin layout para la página de login
+}
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>HerraTools - Iniciar Sesión</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" />
+    <style>
+        body { background-color: #f0f2f5; }
+        .login-card {
+            max-width: 420px;
+            margin: 80px auto;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.12);
+        }
+        .login-header {
+            background-color: #e67e22;
+            color: white;
+            border-radius: 12px 12px 0 0;
+            padding: 24px;
+            text-align: center;
+        }
+        .login-header h2 { margin: 0; font-weight: 700; }
+        .login-header p { margin: 4px 0 0; opacity: 0.9; font-size: 0.9rem; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="card login-card">
+            <div class="login-header">
+                <h2>🔧 HerraTools</h2>
+                <p>Sistema de Alquiler de Herramientas</p>
+            </div>
+            <div class="card-body p-4">
+                <h5 class="card-title mb-3 text-center">Iniciar Sesión</h5>
+
+                @if (!ViewData.ModelState.IsValid)
+                {
+                    <div class="alert alert-danger">
+                        @Html.ValidationSummary(true)
+                    </div>
+                }
+
+                <form asp-action="Login" method="post">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="returnUrl" value="@Context.Request.Query["returnUrl"]" />
+
+                    <div class="mb-3">
+                        <label asp-for="Correo" class="form-label">Correo electrónico</label>
+                        <input asp-for="Correo" class="form-control" placeholder="correo@ejemplo.com" />
+                        <span asp-validation-for="Correo" class="text-danger small"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="Contrasena" class="form-label">Contraseña</label>
+                        <input asp-for="Contrasena" class="form-control" placeholder="••••••••" />
+                        <span asp-validation-for="Contrasena" class="text-danger small"></span>
+                    </div>
+
+                    <div class="d-grid mt-4">
+                        <button type="submit" class="btn btn-warning fw-bold">
+                            Ingresar al sistema
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.5/jquery.validate.min.js"></script>
+</body>
+</html>
