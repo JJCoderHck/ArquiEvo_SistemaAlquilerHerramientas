@@ -24,12 +24,8 @@ public partial class Alquiler
     public DateTime? FechaRegistro { get; set; }
 
     public virtual ICollection<Devolucion> Devolucions { get; set; } = new List<Devolucion>();
-
-    public virtual Cliente IdClienteNavigation { get; set; } = null!;
-
-    public virtual Herramientum IdHerramientaNavigation { get; set; } = null!;
-
+    public virtual Cliente? IdClienteNavigation { get; set; }
+    public virtual Herramientum? IdHerramientaNavigation { get; set; }
     public virtual Reserva? IdReservaNavigation { get; set; }
-
     public virtual ICollection<Mora> Moras { get; set; } = new List<Mora>();
 }

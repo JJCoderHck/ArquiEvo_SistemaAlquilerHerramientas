@@ -21,9 +21,8 @@ public partial class Herramientum
 
     public virtual ICollection<Alquiler> Alquilers { get; set; } = new List<Alquiler>();
 
-    public virtual CategoriaHerramientum IdCategoriaNavigation { get; set; } = null!;
-
-    public virtual Proveedor IdProveedorNavigation { get; set; } = null!;
+    public virtual CategoriaHerramientum? IdCategoriaNavigation { get; set; }
+    public virtual Proveedor? IdProveedorNavigation { get; set; }
 
     public virtual ICollection<Reserva> Reservas { get; set; } = new List<Reserva>();
 }

@@ -4,6 +4,22 @@
     ViewData["Title"] = "Create";
 }
 
+@if (!ViewData.ModelState.IsValid)
+{
+    <div class="alert alert-danger alert-dismissible fade show">
+        <strong>Errores encontrados:</strong>
+        <ul>
+            @foreach (var modelState in ViewData.ModelState.Values)
+            {
+                @foreach (var error in modelState.Errors)
+                {
+                    <li>@error.ErrorMessage</li>
+                }
+            }
+        </ul>
+    </div>
+}
+
 <h1>Create</h1>
 
 <h4>Reserva</h4>

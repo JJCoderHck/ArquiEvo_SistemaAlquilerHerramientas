@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using SistemaAlquilerHerramientas.Models;
+using SistemaAlquilerHerramientas.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,10 +15,12 @@ namespace SistemaAlquilerHerramientas.Controllers
     public class AlquilersController : Controller
     {
         private readonly AlquilerHerramientasContext _context;
+        private readonly HerramientaEstadoService _estadoService;
 
-        public AlquilersController(AlquilerHerramientasContext context)
+        public AlquilersController(AlquilerHerramientasContext context, HerramientaEstadoService estadoService)
         {
             _context = context;
+            _estadoService = estadoService;
         }
 
         // GET: Alquilers
@@ -62,18 +65,58 @@ namespace SistemaAlquilerHerramientas.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("IdAlquiler,IdCliente,IdHerramienta,IdReserva,FechaEntrega,FechaDevolucionPactada,MontoEstimado,EstadoAlquiler,FechaRegistro")] Alquiler alquiler)
+        public async Task<IActionResult> Create(Alquiler alquiler)
         {
+            // Validar disponibilidad: debe estar Disponible o Reservada para este cliente (RN-09) - [Bind("IdAlquiler,IdCliente,IdHerramienta,IdReserva,FechaEntrega,FechaDevolucionPactada,MontoEstimado,EstadoAlquiler,FechaRegistro")] 
+            bool disponible = _estadoService.EstaDisponible(alquiler.IdHerramienta);
+            bool reservada = _estadoService.EstaReservada(alquiler.IdHerramienta);
+
+            if (!disponible && !reservada)
+            {
+                ModelState.AddModelError("IdHerramienta",
+                    "La herramienta no está disponible ni reservada para alquiler.");
+            }
+
+            // Validar fechas (RN-10)
+            if (alquiler.FechaDevolucionPactada <= alquiler.FechaEntrega)
+            {
+                ModelState.AddModelError("FechaDevolucionPactada",
+                    "La fecha de devolución pactada debe ser posterior a la fecha de entrega.");
+            }
+
             if (ModelState.IsValid)
             {
-                _context.Add(alquiler);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                ViewData["IdCliente"] = new SelectList(_context.Clientes, "IdCliente", "Nombres", alquiler.IdCliente);
+                ViewData["IdHerramienta"] = new SelectList(_context.Herramienta, "IdHerramienta", "Nombre", alquiler.IdHerramienta);
+                ViewData["IdReserva"] = new SelectList(_context.Reservas, "IdReserva", "IdReserva", alquiler.IdReserva);
+                return View(alquiler);
             }
-            ViewData["IdCliente"] = new SelectList(_context.Clientes, "IdCliente", "IdCliente", alquiler.IdCliente);
-            ViewData["IdHerramienta"] = new SelectList(_context.Herramienta, "IdHerramienta", "IdHerramienta", alquiler.IdHerramienta);
-            ViewData["IdReserva"] = new SelectList(_context.Reservas, "IdReserva", "IdReserva", alquiler.IdReserva);
-            return View(alquiler);
+            // Calcular monto estimado (Contrato 09: días × precio)
+            var herramienta = await _context.Herramienta.FindAsync(alquiler.IdHerramienta);
+            int dias = (alquiler.FechaDevolucionPactada - alquiler.FechaEntrega).Days;
+            alquiler.MontoEstimado = herramienta!.PrecioPorDia * dias;
+
+            alquiler.EstadoAlquiler = "Activo";
+            alquiler.FechaRegistro = DateTime.Now;
+            _context.Alquilers.Add(alquiler);
+            await _context.SaveChangesAsync();
+
+            // RN-09: cambiar estado herramienta → Alquilada
+            _estadoService.CambiarEstado(alquiler.IdHerramienta,
+                HerramientaEstadoService.Estados.Alquilada);
+
+            // Si venía de una reserva, cerrarla
+            if (alquiler.IdReserva.HasValue)
+            {
+                var reserva = await _context.Reservas.FindAsync(alquiler.IdReserva.Value);
+                if (reserva != null)
+                {
+                    reserva.EstadoReserva = "Completada";
+                    await _context.SaveChangesAsync();
+                }
+            }
+
+            return RedirectToAction(nameof(Index));
         }
 
         // GET: Alquilers/Edit/5

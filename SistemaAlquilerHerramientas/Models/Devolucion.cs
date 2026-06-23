@@ -17,5 +17,5 @@ public partial class Devolucion
 
     public DateTime? FechaRegistro { get; set; }
 
-    public virtual Alquiler IdAlquilerNavigation { get; set; } = null!;
+    public virtual Alquiler? IdAlquilerNavigation { get; set; } = null!;
 }

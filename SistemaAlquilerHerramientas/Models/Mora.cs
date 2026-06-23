@@ -15,5 +15,5 @@ public partial class Mora
 
     public string? EstadoPago { get; set; }
 
-    public virtual Alquiler IdAlquilerNavigation { get; set; } = null!;
+    public virtual Alquiler? IdAlquilerNavigation { get; set; }
 }

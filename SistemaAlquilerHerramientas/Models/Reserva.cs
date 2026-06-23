@@ -20,8 +20,6 @@ public partial class Reserva
     public DateTime? FechaRegistro { get; set; }
 
     public virtual ICollection<Alquiler> Alquilers { get; set; } = new List<Alquiler>();
-
-    public virtual Cliente IdClienteNavigation { get; set; } = null!;
-
-    public virtual Herramientum IdHerramientaNavigation { get; set; } = null!;
+    public virtual Cliente? IdClienteNavigation { get; set; }
+    public virtual Herramientum? IdHerramientaNavigation { get; set; }
 }

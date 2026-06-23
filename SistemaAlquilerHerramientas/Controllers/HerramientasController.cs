@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace SistemaAlquilerHerramientas.Controllers
 {
-    [Authorize(Roles = "Administrador,Cliente")]
+    [Authorize(Roles = "Administrador")]
     public class HerramientasController : Controller
     {
         private readonly AlquilerHerramientasContext _context;
@@ -50,8 +50,8 @@ namespace SistemaAlquilerHerramientas.Controllers
         // GET: Herramientas/Create
         public IActionResult Create()
         {
-            ViewData["IdCategoria"] = new SelectList(_context.CategoriaHerramienta, "IdCategoria", "IdCategoria");
-            ViewData["IdProveedor"] = new SelectList(_context.Proveedors, "IdProveedor", "IdProveedor");
+            ViewData["IdCategoria"] = new SelectList(_context.CategoriaHerramienta, "IdCategoria", "NombreCategoria");
+            ViewData["IdProveedor"] = new SelectList(_context.Proveedors, "IdProveedor", "RazonSocial");
             return View();
         }
 
@@ -60,17 +60,56 @@ namespace SistemaAlquilerHerramientas.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("IdHerramienta,Nombre,Descripcion,PrecioPorDia,EstadoHerramienta,IdCategoria,IdProveedor")] Herramientum herramientum)
+        
+        public async Task<IActionResult> Create([Bind("Nombre,Descripcion,PrecioPorDia,EstadoHerramienta,IdCategoria,IdProveedor")] Herramientum herramientum)
         {
-            if (ModelState.IsValid)
+            try
             {
+                if (string.IsNullOrWhiteSpace(herramientum.Nombre))
+                {
+                    ModelState.AddModelError("Nombre", "El nombre es obligatorio.");
+                }
+
+                if (herramientum.PrecioPorDia <= 0)
+                {
+                    ModelState.AddModelError("PrecioPorDia", "El precio debe ser mayor a 0.");
+                }
+
+                var categoria = await _context.CategoriaHerramienta.FindAsync(herramientum.IdCategoria);
+                if (categoria == null)
+                {
+                    ModelState.AddModelError("IdCategoria", "Categoría inválida.");
+                }
+
+                var proveedor = await _context.Proveedors.FindAsync(herramientum.IdProveedor);
+                if (proveedor == null)
+                {
+                    ModelState.AddModelError("IdProveedor", "Proveedor inválido.");
+                }
+
+                if (string.IsNullOrWhiteSpace(herramientum.EstadoHerramienta))
+                {
+                    herramientum.EstadoHerramienta = "Disponible";
+                }
+
+                if (!ModelState.IsValid)
+                {
+                    ViewData["IdCategoria"] = new SelectList(_context.CategoriaHerramienta, "IdCategoria", "NombreCategoria", herramientum.IdCategoria);
+                    ViewData["IdProveedor"] = new SelectList(_context.Proveedors, "IdProveedor", "RazonSocial", herramientum.IdProveedor);
+                    return View(herramientum);
+                }
+
                 _context.Add(herramientum);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["IdCategoria"] = new SelectList(_context.CategoriaHerramienta, "IdCategoria", "IdCategoria", herramientum.IdCategoria);
-            ViewData["IdProveedor"] = new SelectList(_context.Proveedors, "IdProveedor", "IdProveedor", herramientum.IdProveedor);
-            return View(herramientum);
+            catch (Exception ex)
+            {
+                ModelState.AddModelError("", "Error: " + ex.Message);
+                ViewData["IdCategoria"] = new SelectList(_context.CategoriaHerramienta, "IdCategoria", "NombreCategoria", herramientum.IdCategoria);
+                ViewData["IdProveedor"] = new SelectList(_context.Proveedors, "IdProveedor", "RazonSocial", herramientum.IdProveedor);
+                return View(herramientum);
+            }
         }
 
         // GET: Herramientas/Edit/5

@@ -4,6 +4,22 @@
     ViewData["Title"] = "Create";
 }
 
+@if (!ViewData.ModelState.IsValid)
+{
+    <div class="alert alert-danger alert-dismissible fade show">
+        <strong>Errores encontrados:</strong>
+        <ul>
+            @foreach (var modelState in ViewData.ModelState.Values)
+            {
+                @foreach (var error in modelState.Errors)
+                {
+                    <li>@error.ErrorMessage</li>
+                }
+            }
+        </ul>
+    </div>
+}
+
 <h1>Create</h1>
 
 <h4>Herramientum</h4>
@@ -28,17 +44,26 @@
                 <span asp-validation-for="PrecioPorDia" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="EstadoHerramienta" class="control-label"></label>
-                <input asp-for="EstadoHerramienta" class="form-control" />
-                <span asp-validation-for="EstadoHerramienta" class="text-danger"></span>
+                <label asp-for="EstadoHerramienta" class="form-label">Estado de Herramienta</label>
+                <select asp-for="EstadoHerramienta" class="form-select">
+                    <option value="">-- Seleccionar --</option>
+                    <option value="Disponible">Disponible</option>
+                    <option value="Reservada">Reservada</option>
+                    <option value="Alquilada">Alquilada</option>
+                    <option value="Mantenimiento">Mantenimiento</option>
+                    <option value="Dada de baja">Dada de baja</option>
+                </select>
+                <span asp-validation-for="EstadoHerramienta" class="text-danger small"></span>
             </div>
             <div class="form-group">
                 <label asp-for="IdCategoria" class="control-label"></label>
-                <select asp-for="IdCategoria" class ="form-control" asp-items="ViewBag.IdCategoria"></select>
+                <select asp-for="IdCategoria" class="form-control" asp-items="@(ViewData["IdCategoria"] as SelectList)"></select>
+                <span asp-validation-for="IdCategoria" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="IdProveedor" class="control-label"></label>
-                <select asp-for="IdProveedor" class ="form-control" asp-items="ViewBag.IdProveedor"></select>
+                <select asp-for="IdProveedor" class="form-control" asp-items="@(ViewData["IdProveedor"] as SelectList)"></select>
+                <span asp-validation-for="IdProveedor" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />
