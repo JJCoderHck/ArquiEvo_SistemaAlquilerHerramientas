@@ -1,7 +1,13 @@
+using Microsoft.EntityFrameworkCore;
+using SistemaAlquilerHerramientas.Models;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+builder.Services.AddDbContext<AlquilerHerramientasContext>(options =>
+options.UseSqlServer(builder.Configuration.GetConnectionString("conexion")));
+
 
 var app = builder.Build();
 
