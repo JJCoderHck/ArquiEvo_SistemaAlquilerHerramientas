@@ -91,6 +91,7 @@ namespace SistemaAlquilerHerramientas.Controllers
                 ViewData["IdReserva"] = new SelectList(_context.Reservas, "IdReserva", "IdReserva", alquiler.IdReserva);
                 return View(alquiler);
             }
+
             // Calcular monto estimado (Contrato 09: días × precio)
             var herramienta = await _context.Herramienta.FindAsync(alquiler.IdHerramienta);
             int dias = (alquiler.FechaDevolucionPactada - alquiler.FechaEntrega).Days;
