@@ -1,0 +1,100 @@
+﻿@{
+    ViewData["Title"] = "Reportes";
+}
+
+<div class="container-fluid mt-4">
+    <div class="row mb-4">
+        <div class="col-12">
+            <h1>Generación de Reportes</h1>
+            <p class="text-muted">Descarga reportes en PDF sobre herramientas, alquileres, reservas, devoluciones y moras</p>
+            <hr />
+        </div>
+    </div>
+
+    <div class="row g-3">
+        <!-- Reporte Herramientas Disponibles -->
+        <div class="col-md-6 col-lg-4">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title">Herramientas Disponibles</h5>
+                    <p class="card-text">Reporte de todas las herramientas disponibles para alquilar con sus precios y categorías.</p>
+                </div>
+                <div class="card-footer bg-white">
+                    <form asp-action="DescargarHerramientasDisponibles" method="post" class="d-inline">
+                        <button type="submit" class="btn btn-primary btn-sm w-100">
+                            <i class="bi bi-download"></i> Descargar PDF
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Reporte Alquileres Activos -->
+        <div class="col-md-6 col-lg-4">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title">Alquileres Activos</h5>
+                    <p class="card-text">Reporte de alquileres en curso con información de clientes y fechas de devolución.</p>
+                </div>
+                <div class="card-footer bg-white">
+                    <form asp-action="DescargarAlquileresActivos" method="post" class="d-inline">
+                        <button type="submit" class="btn btn-success btn-sm w-100">
+                            <i class="bi bi-download"></i> Descargar PDF
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Reporte Reservas -->
+        <div class="col-md-6 col-lg-4">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title">Reservas</h5>
+                    <p class="card-text">Reporte de todas las reservas registradas con fechas de inicio y fin estimadas.</p>
+                </div>
+                <div class="card-footer bg-white">
+                    <form asp-action="DescargarReservas" method="post" class="d-inline">
+                        <button type="submit" class="btn btn-info btn-sm w-100">
+                            <i class="bi bi-download"></i> Descargar PDF
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Reporte Devoluciones -->
+        <div class="col-md-6 col-lg-4">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title">Devoluciones</h5>
+                    <p class="card-text">Reporte de herramientas devueltas incluyendo estado, retrasos y observaciones.</p>
+                </div>
+                <div class="card-footer bg-white">
+                    <form asp-action="DescargarDevoluciones" method="post" class="d-inline">
+                        <button type="submit" class="btn btn-warning btn-sm w-100">
+                            <i class="bi bi-download"></i> Descargar PDF
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Reporte Moras -->
+        <div class="col-md-6 col-lg-4">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title">Moras</h5>
+                    <p class="card-text">Reporte de clientes con retrasos en devoluciones y montos de mora pendientes.</p>
+                </div>
+                <div class="card-footer bg-white">
+                    <form asp-action="DescargarMoras" method="post" class="d-inline">
+                        <button type="submit" class="btn btn-danger btn-sm w-100">
+                            <i class="bi bi-download"></i> Descargar PDF
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

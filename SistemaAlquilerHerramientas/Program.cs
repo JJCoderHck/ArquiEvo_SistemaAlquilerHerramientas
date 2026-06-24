@@ -9,6 +9,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllersWithViews();
 builder.Services.AddDbContext<AlquilerHerramientasContext>(options =>
 options.UseSqlServer(builder.Configuration.GetConnectionString("conexion")));
+builder.Services.AddScoped<PdfReporteService>();
 
 // Autenticación por cookies con roles
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
