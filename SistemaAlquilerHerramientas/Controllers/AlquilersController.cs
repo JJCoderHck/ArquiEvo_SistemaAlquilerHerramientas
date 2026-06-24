@@ -93,11 +93,8 @@ namespace SistemaAlquilerHerramientas.Controllers
                 return View(alquiler);
             }
 
-<<<<<<< HEAD
             // Calcular monto estimado (Contrato 09: días × precio)
-=======
             // Todo válido: calcular monto y guardar
->>>>>>> 37ec13f515f4187d2f8dc9fd9a18ec6de34a8f39
             var herramienta = await _context.Herramienta.FindAsync(alquiler.IdHerramienta);
             int dias = (alquiler.FechaDevolucionPactada - alquiler.FechaEntrega).Days;
             alquiler.MontoEstimado = herramienta!.PrecioPorDia * dias;
