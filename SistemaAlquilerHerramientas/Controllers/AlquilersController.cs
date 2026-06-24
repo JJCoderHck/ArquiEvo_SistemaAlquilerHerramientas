@@ -67,7 +67,7 @@ namespace SistemaAlquilerHerramientas.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(Alquiler alquiler)
         {
-            // Validar disponibilidad: debe estar Disponible o Reservada para este cliente (RN-09) - [Bind("IdAlquiler,IdCliente,IdHerramienta,IdReserva,FechaEntrega,FechaDevolucionPactada,MontoEstimado,EstadoAlquiler,FechaRegistro")] 
+            // Validar disponibilidad (RN-09)
             bool disponible = _estadoService.EstaDisponible(alquiler.IdHerramienta);
             bool reservada = _estadoService.EstaReservada(alquiler.IdHerramienta);
 
@@ -84,7 +84,8 @@ namespace SistemaAlquilerHerramientas.Controllers
                     "La fecha de devolución pactada debe ser posterior a la fecha de entrega.");
             }
 
-            if (ModelState.IsValid)
+            // Si hay errores: recargar selects y volver a la vista
+            if (!ModelState.IsValid)
             {
                 ViewData["IdCliente"] = new SelectList(_context.Clientes, "IdCliente", "Nombres", alquiler.IdCliente);
                 ViewData["IdHerramienta"] = new SelectList(_context.Herramienta, "IdHerramienta", "Nombre", alquiler.IdHerramienta);
@@ -92,17 +93,21 @@ namespace SistemaAlquilerHerramientas.Controllers
                 return View(alquiler);
             }
 
+<<<<<<< HEAD
             // Calcular monto estimado (Contrato 09: días × precio)
+=======
+            // Todo válido: calcular monto y guardar
+>>>>>>> 37ec13f515f4187d2f8dc9fd9a18ec6de34a8f39
             var herramienta = await _context.Herramienta.FindAsync(alquiler.IdHerramienta);
             int dias = (alquiler.FechaDevolucionPactada - alquiler.FechaEntrega).Days;
             alquiler.MontoEstimado = herramienta!.PrecioPorDia * dias;
-
             alquiler.EstadoAlquiler = "Activo";
             alquiler.FechaRegistro = DateTime.Now;
+
             _context.Alquilers.Add(alquiler);
             await _context.SaveChangesAsync();
 
-            // RN-09: cambiar estado herramienta → Alquilada
+            // RN-09: cambiar estado herramienta - Alquilada
             _estadoService.CambiarEstado(alquiler.IdHerramienta,
                 HerramientaEstadoService.Estados.Alquilada);
 
