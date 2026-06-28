@@ -1,0 +1,55 @@
+﻿@model SistemaAlquilerHerramientas.Models.Devolucion
+
+@{
+    ViewData["Title"] = "Eliminar devolucion";
+}
+
+<div class="view-head compact danger-head">
+    <div>
+        <span class="eyebrow">Confirmacion</span>
+        <h1>Eliminar devolucion</h1>
+        <p>Revisa los datos antes de confirmar la eliminacion. Esta accion afectara el registro seleccionado.</p>
+    </div>
+</div>
+
+<div class="detail-shell danger-shell">
+    <dl class="row">
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.FechaDevolucionReal)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.FechaDevolucionReal)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.EstadoRetorno)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.EstadoRetorno)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Observacion)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Observacion)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.FechaRegistro)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.FechaRegistro)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.IdAlquilerNavigation)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.IdAlquilerNavigation.IdAlquiler)
+        </dd>
+    </dl>
+</div>
+<form asp-action="Delete" class="view-actions danger-actions">
+        <input type="hidden" asp-for="IdDevolucion" />
+        <input type="submit" value="Eliminar" class="btn btn-danger" />
+        <a asp-action="Index">Volver al listado</a>
+    </form>
+
+

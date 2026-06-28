@@ -1,0 +1,45 @@
+﻿@model IEnumerable<SistemaAlquilerHerramientas.Models.Rol>
+
+@{
+    ViewData["Title"] = "Roles";
+}
+
+<div class="view-head">
+    <div>
+        <span class="eyebrow">Listado</span>
+        <h1>Roles</h1>
+        <p>Define perfiles de acceso para los usuarios.</p>
+    </div>
+    <a asp-action="Create" class="btn btn-primary">Nuevo registro</a>
+</div>
+<div class="table-shell">
+<table class="table app-table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.NombreRol)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Descripcion)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.NombreRol)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Descripcion)
+            </td>
+            <td>
+                <a class="table-action table-action-edit" asp-action="Edit" asp-route-id="@item.IdRol">Editar</a> <a class="table-action table-action-view" asp-action="Details" asp-route-id="@item.IdRol">Ver</a> <a class="table-action table-action-delete" asp-action="Delete" asp-route-id="@item.IdRol">Eliminar</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
+</div>
+

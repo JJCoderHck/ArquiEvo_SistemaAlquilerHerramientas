@@ -1,0 +1,57 @@
+﻿@model IEnumerable<SistemaAlquilerHerramientas.Models.Mora>
+
+@{
+    ViewData["Title"] = "Moras";
+}
+
+<div class="view-head">
+    <div>
+        <span class="eyebrow">Listado</span>
+        <h1>Moras</h1>
+        <p>Revisa retrasos, montos pendientes y estado de pago.</p>
+    </div>
+    <a asp-action="Create" class="btn btn-primary">Nuevo registro</a>
+</div>
+<div class="table-shell">
+<table class="table app-table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.DiasRetraso)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.MontoMora)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.EstadoPago)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.IdAlquilerNavigation)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.DiasRetraso)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.MontoMora)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.EstadoPago)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.IdAlquilerNavigation.IdAlquiler)
+            </td>
+            <td>
+                <a class="table-action table-action-edit" asp-action="Edit" asp-route-id="@item.IdMora">Editar</a> <a class="table-action table-action-view" asp-action="Details" asp-route-id="@item.IdMora">Ver</a> <a class="table-action table-action-delete" asp-action="Delete" asp-route-id="@item.IdMora">Eliminar</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
+</div>
+

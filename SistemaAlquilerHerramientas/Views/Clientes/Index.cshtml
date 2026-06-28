@@ -1,0 +1,75 @@
+﻿@model IEnumerable<SistemaAlquilerHerramientas.Models.Cliente>
+
+@{
+    ViewData["Title"] = "Clientes";
+}
+
+<div class="view-head">
+    <div>
+        <span class="eyebrow">Listado</span>
+        <h1>Clientes</h1>
+        <p>Administra datos de contacto, documento y estado.</p>
+    </div>
+    <a asp-action="Create" class="btn btn-primary">Nuevo registro</a>
+</div>
+<div class="table-shell">
+<table class="table app-table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Nombres)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Apellidos)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Dni)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Telefono)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Correo)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Direccion)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Estado)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Nombres)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Apellidos)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Dni)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Telefono)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Correo)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Direccion)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Estado)
+            </td>
+            <td>
+                <a class="table-action table-action-edit" asp-action="Edit" asp-route-id="@item.IdCliente">Editar</a> <a class="table-action table-action-view" asp-action="Details" asp-route-id="@item.IdCliente">Ver</a> <a class="table-action table-action-delete" asp-action="Delete" asp-route-id="@item.IdCliente">Eliminar</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
+</div>
+

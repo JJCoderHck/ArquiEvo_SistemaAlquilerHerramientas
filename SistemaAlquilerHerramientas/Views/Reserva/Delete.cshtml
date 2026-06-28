@@ -1,0 +1,61 @@
+﻿@model SistemaAlquilerHerramientas.Models.Reserva
+
+@{
+    ViewData["Title"] = "Eliminar reserva";
+}
+
+<div class="view-head compact danger-head">
+    <div>
+        <span class="eyebrow">Confirmacion</span>
+        <h1>Eliminar reserva</h1>
+        <p>Revisa los datos antes de confirmar la eliminacion. Esta accion afectara el registro seleccionado.</p>
+    </div>
+</div>
+
+<div class="detail-shell danger-shell">
+    <dl class="row">
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.FechaInicio)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.FechaInicio)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.FechaDevolucionEstimada)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.FechaDevolucionEstimada)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.EstadoReserva)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.EstadoReserva)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.FechaRegistro)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.FechaRegistro)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.IdClienteNavigation)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.IdClienteNavigation.IdCliente)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.IdHerramientaNavigation)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.IdHerramientaNavigation.IdHerramienta)
+        </dd>
+    </dl>
+</div>
+<form asp-action="Delete" class="view-actions danger-actions">
+        <input type="hidden" asp-for="IdReserva" />
+        <input type="submit" value="Eliminar" class="btn btn-danger" />
+        <a asp-action="Index">Volver al listado</a>
+    </form>
+
+

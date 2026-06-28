@@ -1,0 +1,47 @@
+﻿@model SistemaAlquilerHerramientas.Models.CategoriaHerramientum
+
+@{
+    ViewData["Title"] = "Nuevo categoria";
+}
+
+<div class="view-head compact">
+    <div>
+        <span class="eyebrow">Formulario</span>
+        <h1>Nuevo categoria</h1>
+        <p>Completa los datos para registrar un nuevo categoria.</p>
+    </div>
+</div>
+<div class="form-shell">
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="NombreCategoria" class="control-label"></label>
+                <input asp-for="NombreCategoria" class="form-control" />
+                <span asp-validation-for="NombreCategoria" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Descripcion" class="control-label"></label>
+                <input asp-for="Descripcion" class="form-control" />
+                <span asp-validation-for="Descripcion" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Estado" class="control-label"></label>
+                <input asp-for="Estado" class="form-control" />
+                <span asp-validation-for="Estado" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Guardar" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+</div>
+<div class="view-actions"><a asp-action="Index">Volver al listado</a></div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
+
+

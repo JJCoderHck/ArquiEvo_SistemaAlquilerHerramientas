@@ -1,50 +1,118 @@
 ﻿<!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - SistemaAlquilerHerramientas</title>
+    <title>@ViewData["Title"] - HerraTools</title>
     <script type="importmap"></script>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/SistemaAlquilerHerramientas.styles.css" asp-append-version="true" />
 </head>
-<body>
-    <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-            <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">SistemaAlquilerHerramientas</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+<body class="app-body">
+    <header class="app-topbar">
+        <a class="brand" asp-controller="Home" asp-action="Dashboard" aria-label="Ir al dashboard de HerraTools">
+            <span class="brand-symbol" aria-hidden="true"></span>
+            <span>
+                <span class="brand-name">HerraTools</span>
+                <span class="brand-tagline">Alquila herramientas sin fricci&oacute;n</span>
+            </span>
+        </a>
+
+        <button class="app-menu-button" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavigation"
+                aria-controls="mainNavigation" aria-expanded="false" aria-label="Abrir menu">
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
+
+        <nav id="mainNavigation" class="collapse app-nav">
+            <ul class="nav-list">
+                <li><a asp-controller="Home" asp-action="Dashboard">Inicio</a></li>
+
+                @if (User.Identity?.IsAuthenticated == true)
+                {
+                    <li><a asp-controller="Herramientas" asp-action="Index">Herramientas</a></li>
+                    <li><a asp-controller="Reserva" asp-action="Index">Reservas</a></li>
+                    <li><a asp-controller="Alquilers" asp-action="Index">Alquileres</a></li>
+                    <li><a asp-controller="Devolucion" asp-action="Index">Devoluciones</a></li>
+                }
+
+                @if (User.IsInRole("Administrador"))
+                {
+                    <li class="nav-item dropdown">
+                        <a class="dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            Administraci&oacute;n
+                        </a>
+                        <ul class="dropdown-menu app-dropdown">
+                            <li><a class="dropdown-item" asp-controller="Clientes" asp-action="Index">Clientes</a></li>
+                            <li><a class="dropdown-item" asp-controller="Proveedor" asp-action="Index">Proveedores</a></li>
+                            <li><a class="dropdown-item" asp-controller="CategoriaHerramienta" asp-action="Index">Categor&iacute;as</a></li>
+                            <li><a class="dropdown-item" asp-controller="Mora" asp-action="Index">Moras</a></li>
+                            <li><hr class="dropdown-divider" /></li>
+                            <li><a class="dropdown-item" asp-controller="Usuario" asp-action="Index">Usuarios</a></li>
+                            <li><a class="dropdown-item" asp-controller="Rol" asp-action="Index">Roles</a></li>
+                        </ul>
+                    </li>
+                }
+            </ul>
+        </nav>
+
+        <div class="user-zone">
+            @if (User.Identity?.IsAuthenticated == true)
+            {
+                <div class="dropdown">
+                    <a class="user-chip dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <span class="user-avatar">@User.Identity.Name?.Substring(0, 1).ToUpper()</span>
+                        <span class="user-copy">
+                            <span>@User.Identity.Name</span>
+                            <small>@(User.IsInRole("Administrador") ? "Administrador" : "Cliente")</small>
+                        </span>
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end app-dropdown">
+                        <li>
+                            <span class="dropdown-item-text small text-muted">
+                                @User.Claims.FirstOrDefault(c => c.Type == System.Security.Claims.ClaimTypes.Email)?.Value
+                            </span>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-                        </li>
+                        <li><hr class="dropdown-divider" /></li>
+                        <li><a class="dropdown-item text-danger" asp-controller="Account" asp-action="Logout">Cerrar sesi&oacute;n</a></li>
                     </ul>
                 </div>
-            </div>
-        </nav>
-    </header>
-    <div class="container">
-        <main role="main" class="pb-3">
-            @RenderBody()
-        </main>
-    </div>
-
-    <footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; 2026 - SistemaAlquilerHerramientas - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+            }
+            else
+            {
+                <a class="login-link" asp-controller="Account" asp-action="Login">Iniciar sesi&oacute;n</a>
+            }
         </div>
+    </header>
+
+    <section class="app-hero">
+        <div>
+            <span class="eyebrow">Sistema de alquiler</span>
+            <h1>Panel de gesti&oacute;n HerraTools</h1>
+            <p>Controla herramientas, reservas, alquileres y devoluciones con una interfaz clara para trabajar r&aacute;pido.</p>
+        </div>
+    </section>
+
+    <main role="main" class="app-main">
+        <section class="app-content">
+            @RenderBody()
+        </section>
+    </main>
+
+    <footer class="app-footer">
+        <span>&copy; 2026 - HerraTools</span>
+        @if (User.Identity?.IsAuthenticated == true)
+        {
+            <span>Sesion activa como <strong>@User.Identity.Name</strong></span>
+        }
     </footer>
+
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>
+

@@ -1,0 +1,63 @@
+﻿@model SistemaAlquilerHerramientas.Models.Reserva
+
+@{
+    ViewData["Title"] = "Editar reserva";
+}
+
+<div class="view-head compact">
+    <div>
+        <span class="eyebrow">Formulario</span>
+        <h1>Editar reserva</h1>
+        <p>Actualiza la informacion del reserva seleccionado.</p>
+    </div>
+</div>
+<div class="form-shell">
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Edit">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="IdReserva" />
+            <div class="form-group">
+                <label asp-for="IdCliente" class="control-label"></label>
+                <select asp-for="IdCliente" class="form-control" asp-items="ViewBag.IdCliente"></select>
+                <span asp-validation-for="IdCliente" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="IdHerramienta" class="control-label"></label>
+                <select asp-for="IdHerramienta" class="form-control" asp-items="ViewBag.IdHerramienta"></select>
+                <span asp-validation-for="IdHerramienta" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="FechaInicio" class="control-label"></label>
+                <input asp-for="FechaInicio" class="form-control" />
+                <span asp-validation-for="FechaInicio" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="FechaDevolucionEstimada" class="control-label"></label>
+                <input asp-for="FechaDevolucionEstimada" class="form-control" />
+                <span asp-validation-for="FechaDevolucionEstimada" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="EstadoReserva" class="control-label"></label>
+                <input asp-for="EstadoReserva" class="form-control" />
+                <span asp-validation-for="EstadoReserva" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="FechaRegistro" class="control-label"></label>
+                <input asp-for="FechaRegistro" class="form-control" />
+                <span asp-validation-for="FechaRegistro" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Guardar" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+</div>
+<div class="view-actions"><a asp-action="Index">Volver al listado</a></div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
+
+

@@ -1,0 +1,59 @@
+﻿@model SistemaAlquilerHerramientas.Models.Herramientum
+
+@{
+    ViewData["Title"] = "Detalle de herramienta";
+}
+
+<div class="view-head compact">
+    <div>
+        <span class="eyebrow">Detalle</span>
+        <h1>Detalle de herramienta</h1>
+        <p>Consulta la informacion registrada sin modificar los datos.</p>
+    </div>
+</div>
+
+<div class="detail-shell">
+    <dl class="row">
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Nombre)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Nombre)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Descripcion)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Descripcion)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.PrecioPorDia)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.PrecioPorDia)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.EstadoHerramienta)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.EstadoHerramienta)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.IdCategoriaNavigation)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.IdCategoriaNavigation.IdCategoria)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.IdProveedorNavigation)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.IdProveedorNavigation.IdProveedor)
+        </dd>
+    </dl>
+</div>
+<div class="view-actions">
+    <a class="table-action table-action-edit" asp-action="Edit" asp-route-id="@Model?.IdHerramienta">Editar</a> <a asp-action="Index">Volver al listado</a>
+</div>
+
+

@@ -1,0 +1,81 @@
+﻿@model IEnumerable<SistemaAlquilerHerramientas.Models.Alquiler>
+
+@{
+    ViewData["Title"] = "Alquileres";
+}
+
+<div class="view-head">
+    <div>
+        <span class="eyebrow">Listado</span>
+        <h1>Alquileres</h1>
+        <p>Control de entregas, fechas pactadas y montos estimados.</p>
+    </div>
+    <a asp-action="Create" class="btn btn-primary">Nuevo registro</a>
+</div>
+<div class="table-shell">
+<table class="table app-table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.FechaEntrega)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FechaDevolucionPactada)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.MontoEstimado)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.EstadoAlquiler)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FechaRegistro)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.IdClienteNavigation)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.IdHerramientaNavigation)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.IdReservaNavigation)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.FechaEntrega)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.FechaDevolucionPactada)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.MontoEstimado)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.EstadoAlquiler)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.FechaRegistro)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.IdClienteNavigation.IdCliente)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.IdHerramientaNavigation.IdHerramienta)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.IdReservaNavigation.IdReserva)
+            </td>
+            <td>
+                <a class="table-action table-action-edit" asp-action="Edit" asp-route-id="@item.IdAlquiler">Editar</a> <a class="table-action table-action-view" asp-action="Details" asp-route-id="@item.IdAlquiler">Ver</a> <a class="table-action table-action-delete" asp-action="Delete" asp-route-id="@item.IdAlquiler">Eliminar</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
+</div>
+
