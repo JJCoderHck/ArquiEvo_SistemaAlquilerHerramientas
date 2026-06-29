@@ -10,20 +10,23 @@
 
 <div class="module-grid">
     <a class="module-card" asp-controller="Herramientas" asp-action="Index">
-        <strong>Inventario</strong>
-        <span>Herramientas disponibles y estados</span>
+        <strong>@(User.IsInRole("Administrador") ? "Inventario" : "Catalogo")</strong>
+        <span>@(User.IsInRole("Administrador") ? "Herramientas disponibles y estados" : "Herramientas disponibles para reservar")</span>
     </a>
     <a class="module-card" asp-controller="Reserva" asp-action="Index">
         <strong>Reservas</strong>
         <span>Solicitudes programadas</span>
     </a>
-    <a class="module-card" asp-controller="Alquilers" asp-action="Index">
-        <strong>Alquileres</strong>
-        <span>Operaciones activas</span>
-    </a>
-    <a class="module-card" asp-controller="Devolucion" asp-action="Index">
-        <strong>Devoluciones</strong>
-        <span>Cierre de entregas</span>
-    </a>
+    @if (User.IsInRole("Administrador"))
+    {
+        <a class="module-card" asp-controller="Alquilers" asp-action="Index">
+            <strong>Alquileres</strong>
+            <span>Operaciones activas</span>
+        </a>
+        <a class="module-card" asp-controller="Devolucion" asp-action="Index">
+            <strong>Devoluciones</strong>
+            <span>Cierre de entregas</span>
+        </a>
+    }
 </div>
 

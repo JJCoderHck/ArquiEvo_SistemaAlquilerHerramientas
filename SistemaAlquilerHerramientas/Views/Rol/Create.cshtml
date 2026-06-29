@@ -33,7 +33,9 @@
     </div>
 </div>
 </div>
-<div class="view-actions"><a asp-action="Index">Volver al listado</a></div>
+<div class="view-actions">
+        <a asp-controller="Home" asp-action="Dashboard">Volver al inicio</a>
+    <a asp-action="Index">Volver al listado</a></div>
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}

@@ -163,6 +163,42 @@ a:focus {
   box-shadow: 0 18px 38px rgba(17, 24, 39, 0.16);
 }
 
+.admin-zone {
+  flex: 0 0 auto;
+  margin-left: auto;
+}
+
+.admin-menu-button {
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 14px;
+  color: #20252d;
+  font-weight: 800;
+  border: 1px solid var(--line);
+  background: #fff;
+}
+
+.admin-menu-button:hover,
+.admin-menu-button:focus {
+  color: #20252d;
+  border-color: var(--brand);
+}
+
+.admin-menu-lines {
+  display: inline-flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.admin-menu-lines span {
+  width: 18px;
+  height: 2px;
+  display: block;
+  background: var(--brand-dark);
+}
+
 .user-zone {
   display: flex;
   align-items: center;
@@ -442,6 +478,68 @@ a:focus {
   padding: 6px clamp(18px, 3vw, 28px);
 }
 
+.tool-detail-shell {
+  max-width: none;
+  padding: clamp(18px, 3vw, 28px);
+}
+
+.tool-detail-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(240px, 340px);
+  gap: clamp(18px, 4vw, 34px);
+  align-items: start;
+}
+
+.detail-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.detail-item {
+  min-height: 86px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 16px;
+  border: 1px solid var(--line);
+  background: #fff;
+}
+
+.detail-item-wide {
+  grid-column: 1 / -1;
+}
+
+.detail-item span,
+.form-section-title,
+.report-card span {
+  color: var(--brand);
+  font-size: 0.76rem;
+  font-weight: 900;
+  letter-spacing: 0.06rem;
+  text-transform: uppercase;
+}
+
+.detail-item strong {
+  margin-top: 8px;
+  color: #20252d;
+  font-size: 0.98rem;
+  line-height: 1.45;
+  overflow-wrap: anywhere;
+}
+
+.tool-image-panel {
+  border: 1px solid var(--line);
+  background: #f3f5f7;
+}
+
+.tool-image-panel img {
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  display: block;
+  object-fit: cover;
+}
+
 .danger-shell {
   border-color: rgba(192, 57, 43, 0.28);
   background: #fffafa;
@@ -452,6 +550,39 @@ a:focus {
   flex-wrap: wrap;
   gap: 10px;
   margin-top: 18px;
+}
+
+.global-back-action {
+  display: flex;
+  justify-content: flex-start;
+  margin-bottom: 18px;
+}
+
+.global-back-action a {
+  min-height: 38px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 13px;
+  color: #20252d;
+  text-decoration: none;
+  border: 1px solid var(--line);
+  background: #fff;
+  font-size: 0.88rem;
+  font-weight: 800;
+}
+
+.global-back-action a:hover,
+.global-back-action a:focus {
+  color: #fff;
+  border-color: var(--brand);
+  background: var(--brand);
+}
+
+.app-alert {
+  border-radius: 0;
+  border: 1px solid var(--line);
+  font-weight: 800;
 }
 
 .danger-actions {
@@ -598,6 +729,56 @@ a:focus {
   margin-bottom: 16px;
 }
 
+.register-shell {
+  max-width: 980px;
+}
+
+.form-grid {
+  display: grid;
+  gap: 16px;
+}
+
+.form-grid.two-columns {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.form-section-title {
+  margin: 8px 0 14px;
+}
+
+.report-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.report-card {
+  min-height: 190px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 22px;
+  border: 1px solid var(--line);
+  background: #fff;
+}
+
+.report-card h2 {
+  margin: 10px 0 8px;
+  color: #20252d;
+  font-size: 1.15rem;
+  font-weight: 900;
+}
+
+.report-card p {
+  margin: 0;
+  color: var(--muted);
+  line-height: 1.55;
+}
+
+.report-card .btn {
+  width: fit-content;
+}
+
 .control-label,
 .form-label,
 dt {
@@ -710,6 +891,10 @@ dl.row dd {
 
   .app-menu-button {
     display: block;
+  }
+
+  .admin-zone {
+    order: 2;
     margin-left: auto;
   }
 
@@ -740,8 +925,14 @@ dl.row dd {
   }
 
   .metric-grid,
-  .module-grid {
+  .module-grid,
+  .tool-detail-layout,
+  .report-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .tool-detail-layout {
+    grid-template-columns: 1fr;
   }
 }
 
@@ -752,6 +943,10 @@ dl.row dd {
 
   .brand-tagline,
   .user-copy {
+    display: none;
+  }
+
+  .admin-menu-button > span:last-child {
     display: none;
   }
 
@@ -768,7 +963,10 @@ dl.row dd {
   }
 
   .metric-grid,
-  .module-grid {
+  .module-grid,
+  .detail-grid,
+  .form-grid.two-columns,
+  .report-grid {
     grid-template-columns: 1fr;
   }
 }

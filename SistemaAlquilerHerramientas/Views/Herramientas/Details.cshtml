@@ -2,6 +2,8 @@
 
 @{
     ViewData["Title"] = "Detalle de herramienta";
+    var imagenHerramienta = Url.Content($"~/images/herramientas/{Model.IdHerramienta}.png");
+    var imagenDefault = Url.Content("~/images/no-image.png");
 }
 
 <div class="view-head compact">
@@ -12,48 +14,49 @@
     </div>
 </div>
 
-<div class="detail-shell">
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Nombre)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Nombre)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Descripcion)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Descripcion)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.PrecioPorDia)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.PrecioPorDia)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.EstadoHerramienta)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.EstadoHerramienta)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.IdCategoriaNavigation)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.IdCategoriaNavigation.IdCategoria)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.IdProveedorNavigation)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.IdProveedorNavigation.IdProveedor)
-        </dd>
-    </dl>
+<div class="detail-shell tool-detail-shell">
+    <div class="tool-detail-layout">
+        <section class="detail-grid" aria-label="Informacion de herramienta">
+            <div class="detail-item">
+                <span>Nombre</span>
+                <strong>@Model.Nombre</strong>
+            </div>
+            <div class="detail-item">
+                <span>Precio por dia</span>
+                <strong>@Model.PrecioPorDia.ToString("C")</strong>
+            </div>
+            <div class="detail-item detail-item-wide">
+                <span>Descripcion</span>
+                <strong>@(string.IsNullOrWhiteSpace(Model.Descripcion) ? "Sin descripcion" : Model.Descripcion)</strong>
+            </div>
+            <div class="detail-item">
+                <span>Estado</span>
+                <strong>@(string.IsNullOrWhiteSpace(Model.EstadoHerramienta) ? "Sin estado" : Model.EstadoHerramienta)</strong>
+            </div>
+            <div class="detail-item">
+                <span>Categoria</span>
+                <strong>@(Model.IdCategoriaNavigation?.NombreCategoria ?? $"Categoria {Model.IdCategoria}")</strong>
+            </div>
+            <div class="detail-item">
+                <span>Proveedor</span>
+                <strong>@(Model.IdProveedorNavigation?.RazonSocial ?? $"Proveedor {Model.IdProveedor}")</strong>
+            </div>
+        </section>
+
+        <aside class="tool-image-panel" aria-label="Imagen de herramienta">
+            <img src="@imagenHerramienta"
+                 alt="Imagen de @Model.Nombre"
+                 onerror="this.onerror=null;this.src='@imagenDefault';" />
+        </aside>
+    </div>
 </div>
 <div class="view-actions">
-    <a class="table-action table-action-edit" asp-action="Edit" asp-route-id="@Model?.IdHerramienta">Editar</a> <a asp-action="Index">Volver al listado</a>
+        <a asp-controller="Home" asp-action="Dashboard">Volver al inicio</a>
+    @if (User.IsInRole("Administrador"))
+    {
+        <a class="table-action table-action-edit" asp-action="Edit" asp-route-id="@Model?.IdHerramienta">Editar</a>
+    }
+    <a asp-action="Index">Volver al listado</a>
 </div>
 
 

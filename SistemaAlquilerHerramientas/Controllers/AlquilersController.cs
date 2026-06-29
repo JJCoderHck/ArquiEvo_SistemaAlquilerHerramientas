@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace SistemaAlquilerHerramientas.Controllers
 {
-    [Authorize(Roles = "Administrador,Cliente")]
+    [Authorize(Roles = "Administrador")]
     public class AlquilersController : Controller
     {
         private readonly AlquilerHerramientasContext _context;

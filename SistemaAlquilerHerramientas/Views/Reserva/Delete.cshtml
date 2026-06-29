@@ -1,9 +1,25 @@
 ﻿@model SistemaAlquilerHerramientas.Models.Reserva
 
 @{
+    var esAdministrador = User.IsInRole("Administrador");
     ViewData["Title"] = "Eliminar reserva";
 }
 
+@if (!esAdministrador)
+{
+    <div class="view-head compact danger-head">
+        <div>
+            <span class="eyebrow">Acceso restringido</span>
+            <h1>Reserva no eliminable</h1>
+            <p>Los clientes pueden crear y consultar reservas, pero no eliminarlas.</p>
+        </div>
+    </div>
+    <div class="view-actions">
+        <a asp-controller="Home" asp-action="Dashboard">Volver al inicio</a>
+    <a asp-action="Index">Volver al listado</a></div>
+}
+else
+{
 <div class="view-head compact danger-head">
     <div>
         <span class="eyebrow">Confirmacion</span>
@@ -57,5 +73,6 @@
         <input type="submit" value="Eliminar" class="btn btn-danger" />
         <a asp-action="Index">Volver al listado</a>
     </form>
+}
 
 

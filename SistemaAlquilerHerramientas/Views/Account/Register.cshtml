@@ -1,0 +1,83 @@
+@model RegisterViewModel
+
+@{
+    ViewData["Title"] = "Registro de usuario";
+}
+
+<div class="view-head compact">
+    <div>
+        <span class="eyebrow">Cuenta de cliente</span>
+        <h1>Registrar nuevo usuario</h1>
+        <p>Completa tus datos para crear una cuenta de cliente y poder realizar reservas.</p>
+    </div>
+</div>
+
+<div class="form-shell register-shell">
+    <form asp-action="Register" asp-controller="Account" method="post">
+        @Html.AntiForgeryToken()
+        <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+
+        <div class="form-section-title">Datos personales</div>
+        <div class="form-grid two-columns">
+            <div class="form-group">
+                <label asp-for="Nombres" class="control-label"></label>
+                <input asp-for="Nombres" class="form-control" />
+                <span asp-validation-for="Nombres" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Apellidos" class="control-label"></label>
+                <input asp-for="Apellidos" class="form-control" />
+                <span asp-validation-for="Apellidos" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Dni" class="control-label"></label>
+                <input asp-for="Dni" class="form-control" maxlength="8" />
+                <span asp-validation-for="Dni" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Telefono" class="control-label"></label>
+                <input asp-for="Telefono" class="form-control" />
+                <span asp-validation-for="Telefono" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Correo" class="control-label"></label>
+                <input asp-for="Correo" class="form-control" autocomplete="email" />
+                <span asp-validation-for="Correo" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Direccion" class="control-label"></label>
+                <input asp-for="Direccion" class="form-control" />
+                <span asp-validation-for="Direccion" class="text-danger"></span>
+            </div>
+        </div>
+
+        <div class="form-section-title">Acceso</div>
+        <div class="form-grid two-columns">
+            <div class="form-group">
+                <label asp-for="Usuario" class="control-label"></label>
+                <input asp-for="Usuario" class="form-control" autocomplete="username" />
+                <span asp-validation-for="Usuario" class="text-danger"></span>
+            </div>
+            <div></div>
+            <div class="form-group">
+                <label asp-for="Contrasena" class="control-label"></label>
+                <input asp-for="Contrasena" class="form-control" autocomplete="new-password" />
+                <span asp-validation-for="Contrasena" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="ConfirmarContrasena" class="control-label"></label>
+                <input asp-for="ConfirmarContrasena" class="form-control" autocomplete="new-password" />
+                <span asp-validation-for="ConfirmarContrasena" class="text-danger"></span>
+            </div>
+        </div>
+
+        <div class="view-actions">
+            <input type="submit" value="Registrarme" class="btn btn-primary" />
+            <a asp-controller="Account" asp-action="Login">Volver al login</a>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

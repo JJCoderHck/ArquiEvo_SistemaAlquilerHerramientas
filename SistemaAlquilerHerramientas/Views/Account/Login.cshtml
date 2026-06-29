@@ -295,6 +295,26 @@
             transform: translateY(-1px);
         }
 
+        .form-actions {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .register-link {
+            color: #20252d;
+            font-size: 0.9rem;
+            font-weight: 900;
+            text-decoration: none;
+            border-bottom: 1px solid rgba(233, 85, 69, 0.45);
+        }
+
+        .register-link:hover,
+        .register-link:focus {
+            color: var(--brand);
+        }
+
         .alert {
             border: 0;
             border-left: 4px solid var(--brand);
@@ -485,6 +505,7 @@
             <ul class="nav-links">
                 <li><a href="#nosotros">Nosotros</a></li>
                 <li><a href="#contacto">Contacto</a></li>
+                <li><a asp-controller="Account" asp-action="Register">Registrarse</a></li>
                 <li><a class="nav-cta" href="#login-panel">Iniciar sesi&oacute;n</a></li>
             </ul>
         </nav>
@@ -506,9 +527,18 @@
             <h2>&iquest;Listo para entrar?</h2>
             <p class="subtitle">Ingresa tus credenciales para acceder al panel de HerraTools.</p>
 
+            @if (TempData["SuccessMessage"] is string successMessage)
+            {
+                <div class="alert alert-success mb-4" role="alert">
+                    @successMessage
+                </div>
+            }
+
             @if (!ViewData.ModelState.IsValid)
             {
                 <div class="alert alert-danger mb-4" role="alert">
+                    <strong>Credenciales incorrectas.</strong>
+                    <span>Revisa tu correo o usuario y la contrase&ntilde;a.</span>
                     @Html.ValidationSummary(true)
                 </div>
             }
@@ -529,10 +559,13 @@
                     <span asp-validation-for="Contrasena" class="text-danger small"></span>
                 </div>
 
-                <button type="submit" class="btn login-button">Ingresar</button>
+                <div class="form-actions">
+                    <button type="submit" class="btn login-button">Ingresar</button>
+                    <a class="register-link" asp-controller="Account" asp-action="Register">Registrar nuevo usuario</a>
+                </div>
             </form>
 
-            <p class="support-note">Acceso exclusivo para usuarios registrados del sistema.</p>
+            <p class="support-note">Si todav&iacute;a no tienes una cuenta, registra tu usuario para solicitar acceso como cliente.</p>
         </section>
     </main>
 

@@ -10,7 +10,10 @@
         <h1>Alquileres</h1>
         <p>Control de entregas, fechas pactadas y montos estimados.</p>
     </div>
-    <a asp-action="Create" class="btn btn-primary">Nuevo registro</a>
+    <div class="view-actions">
+        <a asp-controller="Home" asp-action="Dashboard">Volver al inicio</a>
+        <a asp-action="Create" class="btn btn-primary">Nuevo registro</a>
+    </div>
 </div>
 <div class="table-shell">
 <table class="table app-table">
@@ -62,13 +65,13 @@
                 @Html.DisplayFor(modelItem => item.FechaRegistro)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.IdClienteNavigation.IdCliente)
+                @(item.IdClienteNavigation == null ? "Sin cliente" : $"{item.IdClienteNavigation.Nombres} {item.IdClienteNavigation.Apellidos}")
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.IdHerramientaNavigation.IdHerramienta)
+                @(item.IdHerramientaNavigation?.Nombre ?? "Sin herramienta")
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.IdReservaNavigation.IdReserva)
+                @(item.IdReservaNavigation?.IdReserva.ToString() ?? "Sin reserva")
             </td>
             <td>
                 <a class="table-action table-action-edit" asp-action="Edit" asp-route-id="@item.IdAlquiler">Editar</a> <a class="table-action table-action-view" asp-action="Details" asp-route-id="@item.IdAlquiler">Ver</a> <a class="table-action table-action-delete" asp-action="Delete" asp-route-id="@item.IdAlquiler">Eliminar</a>

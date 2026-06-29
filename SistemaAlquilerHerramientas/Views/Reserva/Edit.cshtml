@@ -1,14 +1,30 @@
 ﻿@model SistemaAlquilerHerramientas.Models.Reserva
 
 @{
+    var esAdministrador = User.IsInRole("Administrador");
     ViewData["Title"] = "Editar reserva";
 }
 
+@if (!esAdministrador)
+{
+    <div class="view-head compact danger-head">
+        <div>
+            <span class="eyebrow">Acceso restringido</span>
+            <h1>Reserva no editable</h1>
+            <p>Los clientes pueden consultar sus reservas, pero no modificarlas.</p>
+        </div>
+    </div>
+    <div class="view-actions">
+        <a asp-controller="Home" asp-action="Dashboard">Volver al inicio</a>
+    <a asp-action="Index">Volver al listado</a></div>
+}
+else
+{
 <div class="view-head compact">
     <div>
         <span class="eyebrow">Formulario</span>
         <h1>Editar reserva</h1>
-        <p>Actualiza la informacion del reserva seleccionado.</p>
+        <p>Actualiza la informacion de la reserva seleccionada.</p>
     </div>
 </div>
 <div class="form-shell">
@@ -55,6 +71,8 @@
 </div>
 </div>
 <div class="view-actions"><a asp-action="Index">Volver al listado</a></div>
+
+}
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}

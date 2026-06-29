@@ -10,7 +10,10 @@
         <h1>Moras</h1>
         <p>Revisa retrasos, montos pendientes y estado de pago.</p>
     </div>
-    <a asp-action="Create" class="btn btn-primary">Nuevo registro</a>
+    <div class="view-actions">
+        <a asp-controller="Home" asp-action="Dashboard">Volver al inicio</a>
+        <a asp-action="Create" class="btn btn-primary">Nuevo registro</a>
+    </div>
 </div>
 <div class="table-shell">
 <table class="table app-table">

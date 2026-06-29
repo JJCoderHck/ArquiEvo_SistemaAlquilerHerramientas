@@ -1,9 +1,27 @@
 ﻿@model SistemaAlquilerHerramientas.Models.Reserva
 
 @{
+    var esAdministrador = User.IsInRole("Administrador");
+    var correoUsuario = User.Claims.FirstOrDefault(c => c.Type == System.Security.Claims.ClaimTypes.Email)?.Value ?? User.Identity?.Name;
+    var puedeVerReserva = esAdministrador || (!string.IsNullOrWhiteSpace(correoUsuario) && string.Equals(Model?.IdClienteNavigation?.Correo, correoUsuario, System.StringComparison.OrdinalIgnoreCase));
     ViewData["Title"] = "Detalle de reserva";
 }
 
+@if (!puedeVerReserva)
+{
+    <div class="view-head compact danger-head">
+        <div>
+            <span class="eyebrow">Acceso restringido</span>
+            <h1>Reserva no disponible</h1>
+            <p>Solo puedes consultar las reservas asociadas a tu cuenta.</p>
+        </div>
+    </div>
+    <div class="view-actions">
+        <a asp-controller="Home" asp-action="Dashboard">Volver al inicio</a>
+    <a asp-action="Index">Volver al listado</a></div>
+}
+else
+{
 <div class="view-head compact">
     <div>
         <span class="eyebrow">Detalle</span>
@@ -53,7 +71,12 @@
     </dl>
 </div>
 <div class="view-actions">
-    <a class="table-action table-action-edit" asp-action="Edit" asp-route-id="@Model?.IdReserva">Editar</a> <a asp-action="Index">Volver al listado</a>
+    @if (esAdministrador)
+    {
+        <a class="table-action table-action-edit" asp-action="Edit" asp-route-id="@Model?.IdReserva">Editar</a>
+    }
+    <a asp-action="Index">Volver al listado</a>
 </div>
+}
 
 

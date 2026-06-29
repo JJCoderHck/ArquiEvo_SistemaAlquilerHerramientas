@@ -6,6 +6,7 @@ using SistemaAlquilerHerramientas.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace SistemaAlquilerHerramientas.Controllers
@@ -23,8 +24,20 @@ namespace SistemaAlquilerHerramientas.Controllers
         // GET: Reserva
         public async Task<IActionResult> Index()
         {
-            var alquilerHerramientasContext = _context.Reservas.Include(r => r.IdClienteNavigation).Include(r => r.IdHerramientaNavigation);
-            return View(await alquilerHerramientasContext.ToListAsync());
+            var reservas = _context.Reservas
+                .Include(r => r.IdClienteNavigation)
+                .Include(r => r.IdHerramientaNavigation)
+                .AsQueryable();
+
+            if (!User.IsInRole("Administrador"))
+            {
+                var cliente = await GetCurrentClienteAsync();
+                reservas = cliente == null
+                    ? reservas.Where(r => false)
+                    : reservas.Where(r => r.IdCliente == cliente.IdCliente);
+            }
+
+            return View(await reservas.ToListAsync());
         }
 
         // GET: Reserva/Details/5
@@ -44,14 +57,28 @@ namespace SistemaAlquilerHerramientas.Controllers
                 return NotFound();
             }
 
+            if (!User.IsInRole("Administrador") && !await ReservaPerteneceAlClienteActualAsync(reserva.IdCliente))
+                return Forbid();
+
             return View(reserva);
         }
 
         // GET: Reserva/Create
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
-            ViewData["IdCliente"] = new SelectList(_context.Clientes, "IdCliente", "IdCliente");
-            ViewData["IdHerramienta"] = new SelectList(_context.Herramienta, "IdHerramienta", "IdHerramienta");
+            if (!User.IsInRole("Administrador"))
+            {
+                var cliente = await GetCurrentClienteAsync();
+                if (cliente == null)
+                {
+                    TempData["ErrorMessage"] = "No se encontro un cliente vinculado a tu usuario. Completa el registro de cliente antes de reservar.";
+                    return RedirectToAction(nameof(Index));
+                }
+
+                ViewData["IdClienteActual"] = cliente.IdCliente;
+            }
+
+            await PopulateReservaSelectsAsync();
             return View();
         }
 
@@ -62,18 +89,50 @@ namespace SistemaAlquilerHerramientas.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("IdReserva,IdCliente,IdHerramienta,FechaInicio,FechaDevolucionEstimada,EstadoReserva,FechaRegistro")] Reserva reserva)
         {
+            if (!User.IsInRole("Administrador"))
+            {
+                var cliente = await GetCurrentClienteAsync();
+                if (cliente == null)
+                {
+                    ModelState.AddModelError(string.Empty, "No se encontro un cliente vinculado a tu usuario.");
+                }
+                else
+                {
+                    reserva.IdCliente = cliente.IdCliente;
+                    reserva.EstadoReserva = "Pendiente";
+                }
+            }
+
+            if (string.IsNullOrWhiteSpace(reserva.EstadoReserva))
+                reserva.EstadoReserva = "Pendiente";
+
+            if (reserva.FechaDevolucionEstimada < reserva.FechaInicio)
+                ModelState.AddModelError(nameof(reserva.FechaDevolucionEstimada), "La fecha estimada de devolucion no puede ser anterior a la fecha de inicio.");
+
             if (ModelState.IsValid)
             {
-                _context.Add(reserva);
-                await _context.SaveChangesAsync();
+                try
+                {
+                    _context.Reservas.Add(reserva);
+                    await _context.SaveChangesAsync();
+                    TempData["SuccessMessage"] = "Reserva realizada correctamente.";
+                }
+                catch (DbUpdateException ex)
+                {
+                    ModelState.AddModelError(string.Empty, $"No se pudo guardar la reserva: {ex.GetBaseException().Message}");
+                    await PopulateReservaSelectsAsync(reserva);
+                    return View(reserva);
+                }
+
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["IdCliente"] = new SelectList(_context.Clientes, "IdCliente", "IdCliente", reserva.IdCliente);
-            ViewData["IdHerramienta"] = new SelectList(_context.Herramienta, "IdHerramienta", "IdHerramienta", reserva.IdHerramienta);
+
+            await PopulateReservaSelectsAsync(reserva);
             return View(reserva);
         }
 
         // GET: Reserva/Edit/5
+        [Authorize(Roles = "Administrador")]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -96,6 +155,7 @@ namespace SistemaAlquilerHerramientas.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Administrador")]
         public async Task<IActionResult> Edit(int id, [Bind("IdReserva,IdCliente,IdHerramienta,FechaInicio,FechaDevolucionEstimada,EstadoReserva,FechaRegistro")] Reserva reserva)
         {
             if (id != reserva.IdReserva)
@@ -129,6 +189,7 @@ namespace SistemaAlquilerHerramientas.Controllers
         }
 
         // GET: Reserva/Delete/5
+        [Authorize(Roles = "Administrador")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -151,6 +212,7 @@ namespace SistemaAlquilerHerramientas.Controllers
         // POST: Reserva/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Administrador")]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var reserva = await _context.Reservas.FindAsync(id);
@@ -166,6 +228,48 @@ namespace SistemaAlquilerHerramientas.Controllers
         private bool ReservaExists(int id)
         {
             return _context.Reservas.Any(e => e.IdReserva == id);
+        }
+
+        private async Task<Cliente?> GetCurrentClienteAsync()
+        {
+            var correo = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Email)?.Value;
+
+            if (string.IsNullOrWhiteSpace(correo))
+                return null;
+
+            return await _context.Clientes
+                .FirstOrDefaultAsync(c => c.Correo != null && c.Correo == correo);
+        }
+
+        private async Task<bool> ReservaPerteneceAlClienteActualAsync(int idCliente)
+        {
+            var cliente = await GetCurrentClienteAsync();
+            return cliente != null && cliente.IdCliente == idCliente;
+        }
+
+        private async Task PopulateReservaSelectsAsync(Reserva? reserva = null)
+        {
+            var clientes = await _context.Clientes
+                .OrderBy(c => c.Nombres)
+                .ThenBy(c => c.Apellidos)
+                .Select(c => new
+                {
+                    c.IdCliente,
+                    NombreCompleto = c.Nombres + " " + c.Apellidos
+                })
+                .ToListAsync();
+
+            var herramientas = await _context.Herramienta
+                .OrderBy(h => h.Nombre)
+                .Select(h => new
+                {
+                    h.IdHerramienta,
+                    h.Nombre
+                })
+                .ToListAsync();
+
+            ViewData["IdCliente"] = new SelectList(clientes, "IdCliente", "NombreCompleto", reserva?.IdCliente);
+            ViewData["IdHerramienta"] = new SelectList(herramientas, "IdHerramienta", "Nombre", reserva?.IdHerramienta);
         }
     }
 }

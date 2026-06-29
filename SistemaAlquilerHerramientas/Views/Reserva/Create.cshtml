@@ -1,14 +1,15 @@
 ﻿@model SistemaAlquilerHerramientas.Models.Reserva
 
 @{
-    ViewData["Title"] = "Nuevo reserva";
+    var esAdministrador = User.IsInRole("Administrador");
+    ViewData["Title"] = "Nueva reserva";
 }
 
 <div class="view-head compact">
     <div>
         <span class="eyebrow">Formulario</span>
-        <h1>Nuevo reserva</h1>
-        <p>Completa los datos para registrar un nuevo reserva.</p>
+        <h1>Nueva reserva</h1>
+        <p>Completa los datos para registrar una nueva reserva.</p>
     </div>
 </div>
 <div class="form-shell">
@@ -16,10 +17,18 @@
     <div class="col-md-4">
         <form asp-action="Create">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="IdCliente" class="control-label"></label>
-                <select asp-for="IdCliente" class ="form-control" asp-items="ViewBag.IdCliente"></select>
-            </div>
+            @if (esAdministrador)
+            {
+                <div class="form-group">
+                    <label asp-for="IdCliente" class="control-label"></label>
+                    <select asp-for="IdCliente" class ="form-control" asp-items="ViewBag.IdCliente"></select>
+                    <span asp-validation-for="IdCliente" class="text-danger"></span>
+                </div>
+            }
+            else
+            {
+                <input type="hidden" asp-for="IdCliente" value="@ViewData["IdClienteActual"]" />
+            }
             <div class="form-group">
                 <label asp-for="IdHerramienta" class="control-label"></label>
                 <select asp-for="IdHerramienta" class ="form-control" asp-items="ViewBag.IdHerramienta"></select>
@@ -34,11 +43,18 @@
                 <input asp-for="FechaDevolucionEstimada" class="form-control" />
                 <span asp-validation-for="FechaDevolucionEstimada" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="EstadoReserva" class="control-label"></label>
-                <input asp-for="EstadoReserva" class="form-control" />
-                <span asp-validation-for="EstadoReserva" class="text-danger"></span>
-            </div>
+            @if (esAdministrador)
+            {
+                <div class="form-group">
+                    <label asp-for="EstadoReserva" class="control-label"></label>
+                    <input asp-for="EstadoReserva" class="form-control" />
+                    <span asp-validation-for="EstadoReserva" class="text-danger"></span>
+                </div>
+            }
+            else
+            {
+                <input type="hidden" asp-for="EstadoReserva" value="Pendiente" />
+            }
             <div class="form-group">
                 <input type="submit" value="Guardar" class="btn btn-primary" />
             </div>
@@ -46,7 +62,9 @@
     </div>
 </div>
 </div>
-<div class="view-actions"><a asp-action="Index">Volver al listado</a></div>
+<div class="view-actions">
+        <a asp-controller="Home" asp-action="Dashboard">Volver al inicio</a>
+    <a asp-action="Index">Volver al listado</a></div>
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}

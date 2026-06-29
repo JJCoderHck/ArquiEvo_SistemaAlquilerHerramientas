@@ -1,16 +1,23 @@
 ﻿@model IEnumerable<SistemaAlquilerHerramientas.Models.Herramientum>
 
 @{
-    ViewData["Title"] = "Herramientas";
+    var esAdministrador = User.IsInRole("Administrador");
+    ViewData["Title"] = esAdministrador ? "Herramientas" : "Catalogo de herramientas";
 }
 
 <div class="view-head">
     <div>
-        <span class="eyebrow">Listado</span>
-        <h1>Herramientas</h1>
-        <p>Gestiona inventario, disponibilidad, proveedor y precio diario.</p>
+        <span class="eyebrow">@(esAdministrador ? "Listado" : "Catalogo")</span>
+        <h1>@(esAdministrador ? "Herramientas" : "Catalogo de herramientas")</h1>
+        <p>@(esAdministrador ? "Gestiona inventario, disponibilidad, proveedor y precio diario." : "Consulta las herramientas disponibles antes de crear tu reserva.")</p>
     </div>
-    <a asp-action="Create" class="btn btn-primary">Nuevo registro</a>
+    <div class="view-actions">
+        <a asp-controller="Home" asp-action="Dashboard">Volver al inicio</a>
+        @if (esAdministrador)
+        {
+            <a asp-action="Create" class="btn btn-primary">Nuevo registro</a>
+        }
+    </div>
 </div>
 <div class="table-shell">
 <table class="table app-table">
@@ -59,7 +66,14 @@
                 @Html.DisplayFor(modelItem => item.IdProveedorNavigation.IdProveedor)
             </td>
             <td>
-                <a class="table-action table-action-edit" asp-action="Edit" asp-route-id="@item.IdHerramienta">Editar</a> <a class="table-action table-action-view" asp-action="Details" asp-route-id="@item.IdHerramienta">Ver</a> <a class="table-action table-action-delete" asp-action="Delete" asp-route-id="@item.IdHerramienta">Eliminar</a>
+                @if (esAdministrador)
+                {
+                    <a class="table-action table-action-edit" asp-action="Edit" asp-route-id="@item.IdHerramienta">Editar</a> <a class="table-action table-action-view" asp-action="Details" asp-route-id="@item.IdHerramienta">Ver</a> <a class="table-action table-action-delete" asp-action="Delete" asp-route-id="@item.IdHerramienta">Eliminar</a>
+                }
+                else
+                {
+                    <a class="table-action table-action-view" asp-action="Details" asp-route-id="@item.IdHerramienta">Ver</a>
+                }
             </td>
         </tr>
 }

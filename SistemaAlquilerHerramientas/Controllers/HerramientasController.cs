@@ -48,6 +48,7 @@ namespace SistemaAlquilerHerramientas.Controllers
         }
 
         // GET: Herramientas/Create
+        [Authorize(Roles = "Administrador")]
         public IActionResult Create()
         {
             ViewData["IdCategoria"] = new SelectList(_context.CategoriaHerramienta, "IdCategoria", "IdCategoria");
@@ -60,6 +61,7 @@ namespace SistemaAlquilerHerramientas.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Administrador")]
         public async Task<IActionResult> Create([Bind("IdHerramienta,Nombre,Descripcion,PrecioPorDia,EstadoHerramienta,IdCategoria,IdProveedor")] Herramientum herramientum)
         {
             if (ModelState.IsValid)
@@ -74,6 +76,7 @@ namespace SistemaAlquilerHerramientas.Controllers
         }
 
         // GET: Herramientas/Edit/5
+        [Authorize(Roles = "Administrador")]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -96,6 +99,7 @@ namespace SistemaAlquilerHerramientas.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Administrador")]
         public async Task<IActionResult> Edit(int id, [Bind("IdHerramienta,Nombre,Descripcion,PrecioPorDia,EstadoHerramienta,IdCategoria,IdProveedor")] Herramientum herramientum)
         {
             if (id != herramientum.IdHerramienta)
@@ -129,6 +133,7 @@ namespace SistemaAlquilerHerramientas.Controllers
         }
 
         // GET: Herramientas/Delete/5
+        [Authorize(Roles = "Administrador")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -151,6 +156,7 @@ namespace SistemaAlquilerHerramientas.Controllers
         // POST: Herramientas/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Administrador")]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var herramientum = await _context.Herramienta.FindAsync(id);

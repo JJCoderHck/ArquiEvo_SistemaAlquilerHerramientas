@@ -48,23 +48,24 @@
             @Html.DisplayNameFor(model => model.IdClienteNavigation)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.IdClienteNavigation.IdCliente)
+            @(Model.IdClienteNavigation == null ? "Sin cliente" : $"{Model.IdClienteNavigation.Nombres} {Model.IdClienteNavigation.Apellidos}")
         </dd>
         <dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.IdHerramientaNavigation)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.IdHerramientaNavigation.IdHerramienta)
+            @(Model.IdHerramientaNavigation?.Nombre ?? "Sin herramienta")
         </dd>
         <dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.IdReservaNavigation)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.IdReservaNavigation.IdReserva)
+            @(Model.IdReservaNavigation?.IdReserva.ToString() ?? "Sin reserva")
         </dd>
     </dl>
 </div>
 <div class="view-actions">
+        <a asp-controller="Home" asp-action="Dashboard">Volver al inicio</a>
     <a class="table-action table-action-edit" asp-action="Edit" asp-route-id="@Model?.IdAlquiler">Editar</a> <a asp-action="Index">Volver al listado</a>
 </div>
 
