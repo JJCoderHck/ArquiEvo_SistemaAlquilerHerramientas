@@ -585,6 +585,33 @@ a:focus {
   font-weight: 800;
 }
 
+.app-alert-danger {
+  margin-bottom: 16px;
+  padding: 14px 16px;
+  color: #7a241c;
+  border-color: rgba(192, 57, 43, 0.32);
+  background: #fff1ef;
+}
+
+.associated-records {
+  display: grid;
+  gap: 6px;
+  margin-bottom: 18px;
+  padding: 14px 16px;
+  color: #344054;
+  border: 1px solid rgba(192, 57, 43, 0.22);
+  background: #fffafa;
+}
+
+.associated-records strong {
+  color: #20252d;
+  font-weight: 900;
+}
+
+.associated-records span {
+  overflow-wrap: anywhere;
+}
+
 .danger-actions {
   align-items: center;
 }
@@ -775,8 +802,46 @@ a:focus {
   line-height: 1.55;
 }
 
-.report-card .btn {
+.report-download {
   width: fit-content;
+  min-height: 42px;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 18px;
+  padding: 0 16px 0 10px;
+  color: #20252d;
+  text-decoration: none;
+  border: 1px solid rgba(233, 85, 69, 0.34);
+  background: #fff7f5;
+  font-size: 0.9rem;
+  font-weight: 900;
+  transition: transform 0.18s ease, border-color 0.18s ease, background 0.18s ease, color 0.18s ease;
+}
+
+.report-download span {
+  min-height: 26px;
+  display: inline-flex;
+  align-items: center;
+  padding: 0 8px;
+  color: #fff;
+  background: var(--brand);
+  font-size: 0.72rem;
+  letter-spacing: 0.06rem;
+}
+
+.report-download:hover,
+.report-download:focus {
+  color: #fff;
+  border-color: var(--brand);
+  background: var(--brand);
+  transform: translateY(-1px);
+}
+
+.report-download:hover span,
+.report-download:focus span {
+  color: var(--brand);
+  background: #fff;
 }
 
 .control-label,
@@ -844,6 +909,9 @@ select.form-control:focus {
 }
 
 dl.row {
+  display: grid;
+  grid-template-columns: minmax(190px, 32%) minmax(0, 1fr);
+  column-gap: 0;
   max-width: 820px;
   margin: 22px 0;
   padding: 6px 0;
@@ -852,9 +920,13 @@ dl.row {
 
 dl.row dt,
 dl.row dd {
+  width: auto;
+  max-width: none;
+  margin: 0;
   padding-top: 14px;
   padding-bottom: 14px;
   border-bottom: 1px solid var(--line);
+  overflow-wrap: anywhere;
 }
 
 dl.row dd {
@@ -968,5 +1040,18 @@ dl.row dd {
   .form-grid.two-columns,
   .report-grid {
     grid-template-columns: 1fr;
+  }
+
+  dl.row {
+    grid-template-columns: 1fr;
+  }
+
+  dl.row dt {
+    padding-bottom: 4px;
+    border-bottom: 0;
+  }
+
+  dl.row dd {
+    padding-top: 0;
   }
 }

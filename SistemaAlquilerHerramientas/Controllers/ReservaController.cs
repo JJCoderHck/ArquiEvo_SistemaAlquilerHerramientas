@@ -206,6 +206,7 @@ namespace SistemaAlquilerHerramientas.Controllers
                 return NotFound();
             }
 
+            await PopulateReservaDeleteInfoAsync(reserva.IdReserva);
             return View(reserva);
         }
 
@@ -215,13 +216,60 @@ namespace SistemaAlquilerHerramientas.Controllers
         [Authorize(Roles = "Administrador")]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var reserva = await _context.Reservas.FindAsync(id);
-            if (reserva != null)
+            var reserva = await _context.Reservas
+                .Include(r => r.Alquilers)
+                .FirstOrDefaultAsync(r => r.IdReserva == id);
+
+            if (reserva == null)
             {
-                _context.Reservas.Remove(reserva);
+                return NotFound();
             }
 
+            if (reserva.Alquilers.Any())
+            {
+                TempData["ErrorMessage"] = "No se puede eliminar la reserva porque tiene un alquiler asociado. Primero elimina el alquiler, o usa la opcion para eliminar el alquiler asociado y la reserva.";
+                return RedirectToAction(nameof(Delete), new { id });
+            }
+
+            _context.Reservas.Remove(reserva);
             await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(Index));
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Administrador")]
+        public async Task<IActionResult> DeleteWithAlquileres(int id)
+        {
+            var reserva = await _context.Reservas
+                .Include(r => r.Alquilers)
+                .FirstOrDefaultAsync(r => r.IdReserva == id);
+
+            if (reserva != null)
+            {
+                var alquilerIds = reserva.Alquilers
+                    .Select(a => a.IdAlquiler)
+                    .ToList();
+
+                if (alquilerIds.Count > 0)
+                {
+                    var devoluciones = await _context.Devolucions
+                        .Where(d => alquilerIds.Contains(d.IdAlquiler))
+                        .ToListAsync();
+
+                    var moras = await _context.Moras
+                        .Where(m => alquilerIds.Contains(m.IdAlquiler))
+                        .ToListAsync();
+
+                    _context.Devolucions.RemoveRange(devoluciones);
+                    _context.Moras.RemoveRange(moras);
+                    _context.Alquilers.RemoveRange(reserva.Alquilers);
+                }
+
+                _context.Reservas.Remove(reserva);
+                await _context.SaveChangesAsync();
+            }
+
             return RedirectToAction(nameof(Index));
         }
 
@@ -270,6 +318,17 @@ namespace SistemaAlquilerHerramientas.Controllers
 
             ViewData["IdCliente"] = new SelectList(clientes, "IdCliente", "NombreCompleto", reserva?.IdCliente);
             ViewData["IdHerramienta"] = new SelectList(herramientas, "IdHerramienta", "Nombre", reserva?.IdHerramienta);
+        }
+
+        private async Task PopulateReservaDeleteInfoAsync(int idReserva)
+        {
+            var alquileresAsociados = await _context.Alquilers
+                .Include(a => a.IdHerramientaNavigation)
+                .Where(a => a.IdReserva == idReserva)
+                .OrderBy(a => a.IdAlquiler)
+                .ToListAsync();
+
+            ViewData["AlquileresAsociados"] = alquileresAsociados;
         }
     }
 }

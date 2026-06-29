@@ -63,6 +63,7 @@ namespace SistemaAlquilerHerramientas.Controllers
             if (ModelState.IsValid)
             {
                 _context.Add(devolucion);
+                await ActualizarAlquilerPorDevolucionAsync(devolucion);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
@@ -104,6 +105,7 @@ namespace SistemaAlquilerHerramientas.Controllers
                 try
                 {
                     _context.Update(devolucion);
+                    await ActualizarAlquilerPorDevolucionAsync(devolucion);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
@@ -150,6 +152,14 @@ namespace SistemaAlquilerHerramientas.Controllers
             var devolucion = await _context.Devolucions.FindAsync(id);
             if (devolucion != null)
             {
+                var mora = await _context.Moras
+                    .FirstOrDefaultAsync(m => m.IdAlquiler == devolucion.IdAlquiler);
+
+                if (mora != null)
+                {
+                    _context.Moras.Remove(mora);
+                }
+
                 _context.Devolucions.Remove(devolucion);
             }
 
@@ -160,6 +170,62 @@ namespace SistemaAlquilerHerramientas.Controllers
         private bool DevolucionExists(int id)
         {
             return _context.Devolucions.Any(e => e.IdDevolucion == id);
+        }
+
+        private async Task ActualizarAlquilerPorDevolucionAsync(Devolucion devolucion)
+        {
+            var alquiler = await _context.Alquilers
+                .Include(a => a.IdHerramientaNavigation)
+                .FirstOrDefaultAsync(a => a.IdAlquiler == devolucion.IdAlquiler);
+
+            if (alquiler == null)
+            {
+                return;
+            }
+
+            alquiler.EstadoAlquiler = "Cerrado";
+
+            var mora = await _context.Moras
+                .FirstOrDefaultAsync(m => m.IdAlquiler == devolucion.IdAlquiler);
+
+            if (devolucion.FechaDevolucionReal <= alquiler.FechaDevolucionPactada)
+            {
+                if (mora != null)
+                {
+                    _context.Moras.Remove(mora);
+                }
+
+                return;
+            }
+
+            var diasRetraso = CalcularDiasRetraso(alquiler.FechaDevolucionPactada, devolucion.FechaDevolucionReal);
+            var montoMora = diasRetraso * alquiler.IdHerramientaNavigation.PrecioPorDia;
+
+            if (mora == null)
+            {
+                _context.Moras.Add(new Mora
+                {
+                    IdAlquiler = devolucion.IdAlquiler,
+                    DiasRetraso = diasRetraso,
+                    MontoMora = montoMora,
+                    EstadoPago = "Pendiente"
+                });
+                return;
+            }
+
+            mora.DiasRetraso = diasRetraso;
+            mora.MontoMora = montoMora;
+
+            if (string.IsNullOrWhiteSpace(mora.EstadoPago))
+            {
+                mora.EstadoPago = "Pendiente";
+            }
+        }
+
+        private static int CalcularDiasRetraso(DateTime fechaPactada, DateTime fechaReal)
+        {
+            var dias = (int)Math.Ceiling((fechaReal - fechaPactada).TotalDays);
+            return Math.Max(dias, 1);
         }
     }
 }

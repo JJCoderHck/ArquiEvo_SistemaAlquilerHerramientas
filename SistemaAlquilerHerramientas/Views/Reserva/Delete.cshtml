@@ -2,6 +2,9 @@
 
 @{
     var esAdministrador = User.IsInRole("Administrador");
+    var alquileresAsociados = ViewData["AlquileresAsociados"] as System.Collections.Generic.IEnumerable<SistemaAlquilerHerramientas.Models.Alquiler>
+        ?? System.Linq.Enumerable.Empty<SistemaAlquilerHerramientas.Models.Alquiler>();
+    var tieneAlquileresAsociados = System.Linq.Enumerable.Any(alquileresAsociados);
     ViewData["Title"] = "Eliminar reserva";
 }
 
@@ -27,6 +30,28 @@ else
         <p>Revisa los datos antes de confirmar la eliminacion. Esta accion afectara el registro seleccionado.</p>
     </div>
 </div>
+
+@if (TempData["ErrorMessage"] != null || tieneAlquileresAsociados)
+{
+    <div class="app-alert app-alert-danger">
+        No se puede eliminar la reserva porque tiene un alquiler asociado. Primero elimina el alquiler, o usa la opcion para eliminar el alquiler asociado y la reserva.
+    </div>
+
+    @if (tieneAlquileresAsociados)
+    {
+        <div class="associated-records">
+            <strong>Alquiler asociado</strong>
+            @foreach (var alquiler in alquileresAsociados)
+            {
+                <span>
+                    Alquiler #@alquiler.IdAlquiler -
+                    @(alquiler.IdHerramientaNavigation?.Nombre ?? "Herramienta sin nombre") -
+                    @((alquiler.MontoEstimado ?? 0).ToString("0.00"))
+                </span>
+            }
+        </div>
+    }
+}
 
 <div class="detail-shell danger-shell">
     <dl class="row">
@@ -68,11 +93,22 @@ else
         </dd>
     </dl>
 </div>
-<form asp-action="Delete" class="view-actions danger-actions">
+@if (tieneAlquileresAsociados)
+{
+    <form asp-action="DeleteWithAlquileres" class="view-actions danger-actions">
+        <input type="hidden" asp-for="IdReserva" />
+        <input type="submit" value="Eliminar alquiler asociado y reserva" class="btn btn-danger" />
+        <a asp-action="Index">Volver al listado</a>
+    </form>
+}
+else
+{
+    <form asp-action="Delete" class="view-actions danger-actions">
         <input type="hidden" asp-for="IdReserva" />
         <input type="submit" value="Eliminar" class="btn btn-danger" />
         <a asp-action="Index">Volver al listado</a>
     </form>
+}
 }
 
 

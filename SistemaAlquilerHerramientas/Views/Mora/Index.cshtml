@@ -12,7 +12,6 @@
     </div>
     <div class="view-actions">
         <a asp-controller="Home" asp-action="Dashboard">Volver al inicio</a>
-        <a asp-action="Create" class="btn btn-primary">Nuevo registro</a>
     </div>
 </div>
 <div class="table-shell">
@@ -31,7 +30,7 @@
             <th>
                 @Html.DisplayNameFor(model => model.IdAlquilerNavigation)
             </th>
-            <th></th>
+            <th>Acciones</th>
         </tr>
     </thead>
     <tbody>
@@ -50,7 +49,7 @@
                 @Html.DisplayFor(modelItem => item.IdAlquilerNavigation.IdAlquiler)
             </td>
             <td>
-                <a class="table-action table-action-edit" asp-action="Edit" asp-route-id="@item.IdMora">Editar</a> <a class="table-action table-action-view" asp-action="Details" asp-route-id="@item.IdMora">Ver</a> <a class="table-action table-action-delete" asp-action="Delete" asp-route-id="@item.IdMora">Eliminar</a>
+                <a class="table-action table-action-view" asp-action="Details" asp-route-id="@item.IdMora">Ver</a>
             </td>
         </tr>
 }

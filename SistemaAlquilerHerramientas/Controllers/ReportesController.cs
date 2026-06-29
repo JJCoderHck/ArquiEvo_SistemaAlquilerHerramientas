@@ -47,12 +47,12 @@ namespace SistemaAlquilerHerramientas.Controllers
 
             var columns = new[]
             {
-                new PdfColumn("ID", 42),
+                new PdfColumn("ID", 42, "center"),
                 new PdfColumn("Herramienta", 140),
                 new PdfColumn("Categoria", 106),
                 new PdfColumn("Proveedor", 122),
-                new PdfColumn("Precio Dia", 72),
-                new PdfColumn("Estado", 65)
+                new PdfColumn("Precio Dia", 72, "right"),
+                new PdfColumn("Estado", 65, "center")
             };
 
             var summary = $"Total de herramientas disponibles: {herramientas.Count}";
@@ -87,13 +87,13 @@ namespace SistemaAlquilerHerramientas.Controllers
 
             var columns = new[]
             {
-                new PdfColumn("ID Alq", 50),
+                new PdfColumn("ID Alq", 50, "center"),
                 new PdfColumn("Cliente", 128),
                 new PdfColumn("Herramienta", 120),
-                new PdfColumn("Entrega", 68),
-                new PdfColumn("Devolucion", 76),
-                new PdfColumn("Monto", 62),
-                new PdfColumn("Estado", 55)
+                new PdfColumn("Entrega", 68, "center"),
+                new PdfColumn("Devolucion", 76, "center"),
+                new PdfColumn("Monto", 62, "right"),
+                new PdfColumn("Estado", 55, "center")
             };
 
             var total = alquileres.Sum(a => a.MontoEstimado ?? 0);
@@ -124,12 +124,12 @@ namespace SistemaAlquilerHerramientas.Controllers
 
             var columns = new[]
             {
-                new PdfColumn("ID Reserva", 70),
+                new PdfColumn("ID Reserva", 70, "center"),
                 new PdfColumn("Cliente", 142),
                 new PdfColumn("Herramienta", 138),
-                new PdfColumn("Inicio", 72),
-                new PdfColumn("Devolucion", 82),
-                new PdfColumn("Estado", 55)
+                new PdfColumn("Inicio", 72, "center"),
+                new PdfColumn("Devolucion", 82, "center"),
+                new PdfColumn("Estado", 55, "center")
             };
 
             var pendientes = reservas.Count(r => string.IsNullOrWhiteSpace(r.EstadoReserva)
@@ -163,12 +163,12 @@ namespace SistemaAlquilerHerramientas.Controllers
 
             var columns = new[]
             {
-                new PdfColumn("ID Dev", 50),
-                new PdfColumn("ID Alq", 50),
+                new PdfColumn("ID Dev", 50, "center"),
+                new PdfColumn("ID Alq", 50, "center"),
                 new PdfColumn("Cliente", 130),
                 new PdfColumn("Herramienta", 132),
-                new PdfColumn("Fecha", 76),
-                new PdfColumn("Estado", 88)
+                new PdfColumn("Fecha", 76, "center"),
+                new PdfColumn("Estado", 88, "center")
             };
 
             var summary = $"Total de devoluciones: {devoluciones.Count}";
@@ -201,13 +201,13 @@ namespace SistemaAlquilerHerramientas.Controllers
 
             var columns = new[]
             {
-                new PdfColumn("ID Mora", 57),
-                new PdfColumn("ID Alq", 56),
+                new PdfColumn("ID Mora", 57, "center"),
+                new PdfColumn("ID Alq", 56, "center"),
                 new PdfColumn("Cliente", 113),
                 new PdfColumn("Herramienta", 113),
-                new PdfColumn("Dias Retraso", 74),
-                new PdfColumn("Monto Mora", 74),
-                new PdfColumn("Estado Pago", 73)
+                new PdfColumn("Dias Retraso", 74, "right"),
+                new PdfColumn("Monto Mora", 74, "right"),
+                new PdfColumn("Estado Pago", 73, "center")
             };
 
             var pendientes = moras.Count(m => string.IsNullOrWhiteSpace(m.EstadoPago)
@@ -250,7 +250,7 @@ namespace SistemaAlquilerHerramientas.Controllers
                 kids.Append($"{pageObjectNumber} 0 R ");
 
                 var content = pages[i];
-                objects[pageObjectNumber] = $"<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 {normalFontObjectNumber} 0 R /F2 {boldFontObjectNumber} 0 R >> >> /Contents {contentObjectNumber} 0 R >>";
+                objects[pageObjectNumber] = $"<< /Type /Page /Parent 2 0 R /MediaBox [0 0 842 595] /Resources << /Font << /F1 {normalFontObjectNumber} 0 R /F2 {boldFontObjectNumber} 0 R >> >> /Contents {contentObjectNumber} 0 R >>";
                 objects[contentObjectNumber] = $"<< /Length {Encoding.ASCII.GetByteCount(content)} >>\nstream\n{content}\nendstream";
             }
 
@@ -297,54 +297,62 @@ namespace SistemaAlquilerHerramientas.Controllers
             IReadOnlyList<IReadOnlyList<string>> rows,
             string summary)
         {
-            const float pageWidth = 595;
-            const float tableX = 42;
-            const float topY = 760;
-            const float bottomY = 94;
-            const float headerHeight = 18;
+            const float pageWidth = 842;
+            const float pageHeight = 595;
+            const float tableX = 38;
+            const float tableWidth = pageWidth - tableX * 2;
+            const float topY = 466;
+            const float bottomY = 74;
+            const float headerHeight = 24;
 
             var pages = new List<string>();
-            var content = StartPage(title, pageWidth);
+            var reportColumns = NormalizeColumns(columns, tableWidth);
+            var content = StartPage(title, pageWidth, pageHeight, tableX, tableWidth);
             var y = topY;
 
-            DrawHeader(content, columns, tableX, y, headerHeight);
+            DrawHeader(content, reportColumns, tableX, y, headerHeight);
             y -= headerHeight;
 
             if (rows.Count == 0)
             {
-                DrawEmptyRow(content, tableX, y, columns.Sum(c => c.Width));
+                DrawEmptyRow(content, tableX, y, tableWidth);
                 y -= 28;
             }
             else
             {
+                var rowIndex = 0;
                 foreach (var row in rows)
                 {
-                    var wrapped = WrapRow(row, columns);
-                    var rowHeight = Math.Max(30, wrapped.Max(cell => cell.Count) * 11 + 12);
+                    var wrapped = WrapRow(row, reportColumns);
+                    var rowHeight = Math.Max(34, wrapped.Max(cell => cell.Count) * 11 + 16);
 
                     if (y - rowHeight < bottomY)
                     {
                         pages.Add(FinishPage(content, pages.Count + 1));
-                        content = StartPage(title, pageWidth);
+                        content = StartPage(title, pageWidth, pageHeight, tableX, tableWidth);
                         y = topY;
-                        DrawHeader(content, columns, tableX, y, headerHeight);
+                        DrawHeader(content, reportColumns, tableX, y, headerHeight);
                         y -= headerHeight;
+                        rowIndex = 0;
                     }
 
-                    DrawDataRow(content, columns, wrapped, tableX, y, rowHeight);
+                    DrawDataRow(content, reportColumns, wrapped, tableX, y, rowHeight, rowIndex);
                     y -= rowHeight;
+                    rowIndex++;
                 }
             }
 
-            y -= 32;
+            y -= 26;
             if (y < bottomY)
             {
                 pages.Add(FinishPage(content, pages.Count + 1));
-                content = StartPage(title, pageWidth);
-                y = topY - headerHeight - 32;
+                content = StartPage(title, pageWidth, pageHeight, tableX, tableWidth);
+                y = topY - headerHeight - 26;
             }
 
-            Text(content, "F2", 11, tableX, y, summary);
+            FillRect(content, tableX, y - 18, tableWidth, 30, 0.98f, 0.94f, 0.93f);
+            StrokeRect(content, tableX, y - 18, tableWidth, 30, 0.82f, 0.24f, 0.18f);
+            Text(content, "F2", 10, tableX + 12, y - 6, summary);
             pages.Add(FinishPage(content, pages.Count + 1));
 
             var totalPages = pages.Count;
@@ -354,21 +362,25 @@ namespace SistemaAlquilerHerramientas.Controllers
             return pages;
         }
 
-        private static StringBuilder StartPage(string title, float pageWidth)
+        private static StringBuilder StartPage(string title, float pageWidth, float pageHeight, float tableX, float tableWidth)
         {
             var content = new StringBuilder();
-            content.AppendLine("0 0 0 rg 0 0 0 RG 0.8 w");
+            content.AppendLine("0 0 0 rg 0 0 0 RG 0.6 w");
 
-            var titleX = Math.Max(42, (pageWidth - title.Length * 8.4f) / 2);
-            Text(content, "F2", 16, titleX, 790, title);
-            Text(content, "F1", 10, 424, 766, $"Fecha: {DateTime.Now:dd/MM/yyyy HH:mm}");
+            FillRect(content, 0, pageHeight - 48, pageWidth, 48, 0.13f, 0.16f, 0.20f);
+            FillRect(content, tableX, pageHeight - 58, 112, 6, 0.86f, 0.08f, 0.06f);
+            Text(content, "F2", 18, tableX, pageHeight - 32, title, "1 1 1");
+            Text(content, "F1", 9, tableX, pageHeight - 74, "Sistema de alquiler de herramientas");
+            TextAligned(content, "F1", 9, tableX, pageHeight - 74, $"Fecha: {DateTime.Now:dd/MM/yyyy HH:mm}", "right", "0 0 0", tableWidth);
 
             return content;
         }
 
         private static string FinishPage(StringBuilder content, int page)
         {
-            Text(content, "F1", 8, 42, 36, $"Pagina {page} de __TOTAL_PAGES__");
+            StrokeLine(content, 38, 48, 804, 48, 0.82f, 0.84f, 0.86f);
+            Text(content, "F1", 8, 38, 32, "Reporte generado automaticamente");
+            TextAligned(content, "F1", 8, 38, 32, $"Pagina {page} de __TOTAL_PAGES__", "center", "0 0 0", 766);
             return content.ToString();
         }
 
@@ -377,9 +389,9 @@ namespace SistemaAlquilerHerramientas.Controllers
             var x = tableX;
             foreach (var column in columns)
             {
-                FillRect(content, x, topY - height, column.Width, height, 0.78f, 0, 0);
-                StrokeRect(content, x, topY - height, column.Width, height);
-                Text(content, "F2", 9, x + 3, topY - 13, column.Header, "1 1 1");
+                FillRect(content, x, topY - height, column.Width, height, 0.86f, 0.08f, 0.06f);
+                StrokeRect(content, x, topY - height, column.Width, height, 0.68f, 0.06f, 0.05f);
+                TextAligned(content, "F2", 8, x + 7, topY - 15, column.Header, column.Alignment, "1 1 1", column.Width - 14);
                 x += column.Width;
             }
 
@@ -392,15 +404,22 @@ namespace SistemaAlquilerHerramientas.Controllers
             IReadOnlyList<IReadOnlyList<string>> wrapped,
             float tableX,
             float topY,
-            float height)
+            float height,
+            int rowIndex)
         {
+            var totalWidth = columns.Sum(c => c.Width);
+            if (rowIndex % 2 == 1)
+            {
+                FillRect(content, tableX, topY - height, totalWidth, height, 0.98f, 0.98f, 0.98f);
+            }
+
             var x = tableX;
             for (var i = 0; i < columns.Count; i++)
             {
-                StrokeRect(content, x, topY - height, columns[i].Width, height);
+                StrokeRect(content, x, topY - height, columns[i].Width, height, 0.78f, 0.80f, 0.83f);
 
                 for (var line = 0; line < wrapped[i].Count; line++)
-                    Text(content, "F1", 9, x + 5, topY - 13 - line * 10, wrapped[i][line]);
+                    TextAligned(content, "F1", 8, x + 7, topY - 15 - line * 10, wrapped[i][line], columns[i].Alignment, "0.10 0.13 0.18", columns[i].Width - 14);
 
                 x += columns[i].Width;
             }
@@ -409,8 +428,9 @@ namespace SistemaAlquilerHerramientas.Controllers
         private static void DrawEmptyRow(StringBuilder content, float tableX, float topY, float width)
         {
             const float height = 28;
-            StrokeRect(content, tableX, topY - height, width, height);
-            Text(content, "F1", 9, tableX + 6, topY - 17, "No hay registros para este reporte.");
+            FillRect(content, tableX, topY - height, width, height, 0.98f, 0.98f, 0.98f);
+            StrokeRect(content, tableX, topY - height, width, height, 0.78f, 0.80f, 0.83f);
+            Text(content, "F1", 9, tableX + 10, topY - 17, "No hay registros para este reporte.");
         }
 
         private static void FillRect(StringBuilder content, float x, float y, float width, float height, float r, float g, float b)
@@ -420,14 +440,57 @@ namespace SistemaAlquilerHerramientas.Controllers
             content.AppendLine("0 0 0 rg");
         }
 
-        private static void StrokeRect(StringBuilder content, float x, float y, float width, float height)
+        private static void StrokeRect(StringBuilder content, float x, float y, float width, float height, float r = 0, float g = 0, float b = 0)
         {
-            content.AppendLine($"0 0 0 RG {Number(x)} {Number(y)} {Number(width)} {Number(height)} re S");
+            content.AppendLine($"{Number(r)} {Number(g)} {Number(b)} RG {Number(x)} {Number(y)} {Number(width)} {Number(height)} re S");
+            content.AppendLine("0 0 0 RG");
+        }
+
+        private static void StrokeLine(StringBuilder content, float x1, float y1, float x2, float y2, float r, float g, float b)
+        {
+            content.AppendLine($"{Number(r)} {Number(g)} {Number(b)} RG {Number(x1)} {Number(y1)} m {Number(x2)} {Number(y2)} l S");
+            content.AppendLine("0 0 0 RG");
         }
 
         private static void Text(StringBuilder content, string font, int size, float x, float y, string value, string color = "0 0 0")
         {
             content.AppendLine($"{color} rg BT /{font} {size} Tf {Number(x)} {Number(y)} Td ({EscapePdf(value)}) Tj ET");
+        }
+
+        private static void TextAligned(
+            StringBuilder content,
+            string font,
+            int size,
+            float x,
+            float y,
+            string value,
+            string alignment,
+            string color = "0 0 0",
+            float width = 0)
+        {
+            var textWidth = EstimateTextWidth(value, size);
+            var textX = alignment switch
+            {
+                "right" => x + Math.Max(0, width - textWidth),
+                "center" => x + Math.Max(0, (width - textWidth) / 2),
+                _ => x
+            };
+
+            Text(content, font, size, textX, y, value, color);
+        }
+
+        private static IReadOnlyList<PdfColumn> NormalizeColumns(IReadOnlyList<PdfColumn> columns, float tableWidth)
+        {
+            var originalWidth = columns.Sum(c => c.Width);
+            if (originalWidth <= 0)
+            {
+                return columns;
+            }
+
+            var scale = tableWidth / originalWidth;
+            return columns
+                .Select(c => c with { Width = c.Width * scale })
+                .ToList();
         }
 
         private static IReadOnlyList<IReadOnlyList<string>> WrapRow(IReadOnlyList<string> row, IReadOnlyList<PdfColumn> columns)
@@ -436,7 +499,7 @@ namespace SistemaAlquilerHerramientas.Controllers
             for (var i = 0; i < columns.Count; i++)
             {
                 var value = i < row.Count ? row[i] : string.Empty;
-                var maxCharacters = Math.Max(6, (int)(columns[i].Width / 5.2f));
+                var maxCharacters = Math.Max(7, (int)(columns[i].Width / 4.4f));
                 cells.Add(Wrap(value, maxCharacters));
             }
 
@@ -509,6 +572,11 @@ namespace SistemaAlquilerHerramientas.Controllers
             return value.ToString("0.###", CultureInfo.InvariantCulture);
         }
 
+        private static float EstimateTextWidth(string value, int size)
+        {
+            return (value?.Length ?? 0) * size * 0.48f;
+        }
+
         private static string EscapePdf(string value)
         {
             var normalized = RemoveDiacritics(value)
@@ -538,6 +606,6 @@ namespace SistemaAlquilerHerramientas.Controllers
             return builder.ToString().Normalize(NormalizationForm.FormC);
         }
 
-        private sealed record PdfColumn(string Header, float Width);
+        private sealed record PdfColumn(string Header, float Width, string Alignment = "left");
     }
 }
