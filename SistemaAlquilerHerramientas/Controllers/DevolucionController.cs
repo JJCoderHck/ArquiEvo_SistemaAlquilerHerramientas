@@ -47,9 +47,9 @@ namespace SistemaAlquilerHerramientas.Controllers
         }
 
         // GET: Devolucion/Create
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
-            ViewData["IdAlquiler"] = new SelectList(_context.Alquilers, "IdAlquiler", "IdAlquiler");
+            await PopulateDevolucionSelectsAsync();
             return View();
         }
 
@@ -67,7 +67,7 @@ namespace SistemaAlquilerHerramientas.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["IdAlquiler"] = new SelectList(_context.Alquilers, "IdAlquiler", "IdAlquiler", devolucion.IdAlquiler);
+            await PopulateDevolucionSelectsAsync(devolucion);
             return View(devolucion);
         }
 
@@ -84,7 +84,7 @@ namespace SistemaAlquilerHerramientas.Controllers
             {
                 return NotFound();
             }
-            ViewData["IdAlquiler"] = new SelectList(_context.Alquilers, "IdAlquiler", "IdAlquiler", devolucion.IdAlquiler);
+            await PopulateDevolucionSelectsAsync(devolucion);
             return View(devolucion);
         }
 
@@ -121,7 +121,7 @@ namespace SistemaAlquilerHerramientas.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["IdAlquiler"] = new SelectList(_context.Alquilers, "IdAlquiler", "IdAlquiler", devolucion.IdAlquiler);
+            await PopulateDevolucionSelectsAsync(devolucion);
             return View(devolucion);
         }
 
@@ -226,6 +226,22 @@ namespace SistemaAlquilerHerramientas.Controllers
         {
             var dias = (int)Math.Ceiling((fechaReal - fechaPactada).TotalDays);
             return Math.Max(dias, 1);
+        }
+
+        private async Task PopulateDevolucionSelectsAsync(Devolucion? devolucion = null)
+        {
+            var alquileres = await _context.Alquilers
+                .Include(a => a.IdClienteNavigation)
+                .Include(a => a.IdHerramientaNavigation)
+                .OrderByDescending(a => a.IdAlquiler)
+                .Select(a => new
+                {
+                    a.IdAlquiler,
+                    Descripcion = "Alquiler #" + a.IdAlquiler + " - " + a.IdClienteNavigation.Nombres + " " + a.IdClienteNavigation.Apellidos + " - " + a.IdHerramientaNavigation.Nombre
+                })
+                .ToListAsync();
+
+            ViewData["IdAlquiler"] = new SelectList(alquileres, "IdAlquiler", "Descripcion", devolucion?.IdAlquiler);
         }
     }
 }

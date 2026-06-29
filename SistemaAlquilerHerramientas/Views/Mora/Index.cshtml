@@ -1,6 +1,7 @@
 ﻿@model IEnumerable<SistemaAlquilerHerramientas.Models.Mora>
 
 @{
+    var esCliente = User.IsInRole("Cliente");
     ViewData["Title"] = "Moras";
 }
 
@@ -28,7 +29,13 @@
                 @Html.DisplayNameFor(model => model.EstadoPago)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.IdAlquilerNavigation)
+                Alquiler
+            </th>
+            <th>
+                Cliente
+            </th>
+            <th>
+                Herramienta
             </th>
             <th>Acciones</th>
         </tr>
@@ -46,10 +53,20 @@
                 @Html.DisplayFor(modelItem => item.EstadoPago)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.IdAlquilerNavigation.IdAlquiler)
+                #@item.IdAlquilerNavigation.IdAlquiler
+            </td>
+            <td>
+                @(item.IdAlquilerNavigation.IdClienteNavigation?.Nombres) @(item.IdAlquilerNavigation.IdClienteNavigation?.Apellidos)
+            </td>
+            <td>
+                @(item.IdAlquilerNavigation.IdHerramientaNavigation?.Nombre ?? "Sin herramienta")
             </td>
             <td>
                 <a class="table-action table-action-view" asp-action="Details" asp-route-id="@item.IdMora">Ver</a>
+                @if (esCliente && !string.Equals(item.EstadoPago, "Pagado", System.StringComparison.OrdinalIgnoreCase))
+                {
+                    <a class="table-action table-action-pay" asp-action="Pagar" asp-route-id="@item.IdMora">Pagar</a>
+                }
             </td>
         </tr>
 }

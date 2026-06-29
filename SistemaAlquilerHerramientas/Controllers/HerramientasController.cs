@@ -51,8 +51,7 @@ namespace SistemaAlquilerHerramientas.Controllers
         [Authorize(Roles = "Administrador")]
         public IActionResult Create()
         {
-            ViewData["IdCategoria"] = new SelectList(_context.CategoriaHerramienta, "IdCategoria", "IdCategoria");
-            ViewData["IdProveedor"] = new SelectList(_context.Proveedors, "IdProveedor", "IdProveedor");
+            PopulateHerramientaSelects();
             return View();
         }
 
@@ -70,8 +69,7 @@ namespace SistemaAlquilerHerramientas.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["IdCategoria"] = new SelectList(_context.CategoriaHerramienta, "IdCategoria", "IdCategoria", herramientum.IdCategoria);
-            ViewData["IdProveedor"] = new SelectList(_context.Proveedors, "IdProveedor", "IdProveedor", herramientum.IdProveedor);
+            PopulateHerramientaSelects(herramientum);
             return View(herramientum);
         }
 
@@ -89,8 +87,7 @@ namespace SistemaAlquilerHerramientas.Controllers
             {
                 return NotFound();
             }
-            ViewData["IdCategoria"] = new SelectList(_context.CategoriaHerramienta, "IdCategoria", "IdCategoria", herramientum.IdCategoria);
-            ViewData["IdProveedor"] = new SelectList(_context.Proveedors, "IdProveedor", "IdProveedor", herramientum.IdProveedor);
+            PopulateHerramientaSelects(herramientum);
             return View(herramientum);
         }
 
@@ -127,8 +124,7 @@ namespace SistemaAlquilerHerramientas.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["IdCategoria"] = new SelectList(_context.CategoriaHerramienta, "IdCategoria", "IdCategoria", herramientum.IdCategoria);
-            ViewData["IdProveedor"] = new SelectList(_context.Proveedors, "IdProveedor", "IdProveedor", herramientum.IdProveedor);
+            PopulateHerramientaSelects(herramientum);
             return View(herramientum);
         }
 
@@ -172,6 +168,30 @@ namespace SistemaAlquilerHerramientas.Controllers
         private bool HerramientumExists(int id)
         {
             return _context.Herramienta.Any(e => e.IdHerramienta == id);
+        }
+
+        private void PopulateHerramientaSelects(Herramientum? herramientum = null)
+        {
+            var categorias = _context.CategoriaHerramienta
+                .OrderBy(c => c.NombreCategoria)
+                .Select(c => new
+                {
+                    c.IdCategoria,
+                    Descripcion = c.IdCategoria + " - " + c.NombreCategoria
+                })
+                .ToList();
+
+            var proveedores = _context.Proveedors
+                .OrderBy(p => p.RazonSocial)
+                .Select(p => new
+                {
+                    p.IdProveedor,
+                    Descripcion = p.IdProveedor + " - " + p.RazonSocial
+                })
+                .ToList();
+
+            ViewData["IdCategoria"] = new SelectList(categorias, "IdCategoria", "Descripcion", herramientum?.IdCategoria);
+            ViewData["IdProveedor"] = new SelectList(proveedores, "IdProveedor", "Descripcion", herramientum?.IdProveedor);
         }
     }
 }

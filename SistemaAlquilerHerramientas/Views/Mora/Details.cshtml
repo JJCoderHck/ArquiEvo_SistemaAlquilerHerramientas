@@ -1,6 +1,8 @@
 ﻿@model SistemaAlquilerHerramientas.Models.Mora
 
 @{
+    var esCliente = User.IsInRole("Cliente");
+    var estaPagada = string.Equals(Model.EstadoPago, "Pagado", System.StringComparison.OrdinalIgnoreCase);
     ViewData["Title"] = "Detalle de mora";
 }
 
@@ -36,12 +38,28 @@
             @Html.DisplayNameFor(model => model.IdAlquilerNavigation)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.IdAlquilerNavigation.IdAlquiler)
+            #@Model.IdAlquilerNavigation.IdAlquiler
+        </dd>
+        <dt class="col-sm-2">
+            Cliente
+        </dt>
+        <dd class="col-sm-10">
+            @(Model.IdAlquilerNavigation.IdClienteNavigation?.Nombres) @(Model.IdAlquilerNavigation.IdClienteNavigation?.Apellidos)
+        </dd>
+        <dt class="col-sm-2">
+            Herramienta
+        </dt>
+        <dd class="col-sm-10">
+            @(Model.IdAlquilerNavigation.IdHerramientaNavigation?.Nombre ?? "Sin herramienta")
         </dd>
     </dl>
 </div>
 <div class="view-actions">
         <a asp-controller="Home" asp-action="Dashboard">Volver al inicio</a>
+    @if (esCliente && !estaPagada)
+    {
+        <a class="table-action table-action-pay" asp-action="Pagar" asp-route-id="@Model.IdMora">Pagar mora</a>
+    }
     <a asp-action="Index">Volver al listado</a>
 </div>
 

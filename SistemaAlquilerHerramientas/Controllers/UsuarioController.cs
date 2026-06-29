@@ -49,7 +49,7 @@ namespace SistemaAlquilerHerramientas.Controllers
         // GET: Usuario/Create
         public IActionResult Create()
         {
-            ViewData["IdRol"] = new SelectList(_context.Rols, "IdRol", "IdRol");
+            PopulateRolSelects();
             return View();
         }
 
@@ -66,7 +66,7 @@ namespace SistemaAlquilerHerramientas.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["IdRol"] = new SelectList(_context.Rols, "IdRol", "IdRol", usuario.IdRol);
+            PopulateRolSelects(usuario);
             return View(usuario);
         }
 
@@ -83,7 +83,7 @@ namespace SistemaAlquilerHerramientas.Controllers
             {
                 return NotFound();
             }
-            ViewData["IdRol"] = new SelectList(_context.Rols, "IdRol", "IdRol", usuario.IdRol);
+            PopulateRolSelects(usuario);
             return View(usuario);
         }
 
@@ -119,7 +119,7 @@ namespace SistemaAlquilerHerramientas.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["IdRol"] = new SelectList(_context.Rols, "IdRol", "IdRol", usuario.IdRol);
+            PopulateRolSelects(usuario);
             return View(usuario);
         }
 
@@ -160,6 +160,20 @@ namespace SistemaAlquilerHerramientas.Controllers
         private bool UsuarioExists(int id)
         {
             return _context.Usuarios.Any(e => e.IdUsuario == id);
+        }
+
+        private void PopulateRolSelects(Usuario? usuario = null)
+        {
+            var roles = _context.Rols
+                .OrderBy(r => r.NombreRol)
+                .Select(r => new
+                {
+                    r.IdRol,
+                    r.NombreRol
+                })
+                .ToList();
+
+            ViewData["IdRol"] = new SelectList(roles, "IdRol", "NombreRol", usuario?.IdRol);
         }
     }
 }

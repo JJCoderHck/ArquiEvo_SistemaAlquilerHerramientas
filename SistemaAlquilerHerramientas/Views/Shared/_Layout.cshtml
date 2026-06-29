@@ -34,6 +34,10 @@
                 {
                     <li><a asp-controller="Herramientas" asp-action="Index">@(User.IsInRole("Administrador") ? "Herramientas" : "Catalogo")</a></li>
                     <li><a asp-controller="Reserva" asp-action="Index">Reservas</a></li>
+                    @if (User.IsInRole("Cliente"))
+                    {
+                        <li><a asp-controller="Mora" asp-action="Index">Moras</a></li>
+                    }
 
                     @if (User.IsInRole("Administrador"))
                     {

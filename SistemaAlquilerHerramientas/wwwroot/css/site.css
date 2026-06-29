@@ -466,6 +466,7 @@ a:focus {
 
 .table-shell {
   overflow-x: auto;
+  box-shadow: 0 16px 30px rgba(17, 24, 39, 0.06);
 }
 
 .form-shell {
@@ -622,6 +623,7 @@ a:focus {
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  gap: 6px;
   padding: 0 13px;
   color: #20252d;
   text-decoration: none;
@@ -629,6 +631,8 @@ a:focus {
   background: #fff;
   font-size: 0.88rem;
   font-weight: 800;
+  white-space: nowrap;
+  transition: transform 0.16s ease, border-color 0.16s ease, background 0.16s ease, color 0.16s ease;
 }
 
 .view-actions a:hover,
@@ -638,6 +642,25 @@ a:focus {
   color: #fff;
   border-color: var(--brand);
   background: var(--brand);
+  transform: translateY(-1px);
+}
+
+.table-action-view {
+  border-color: #cad1d9;
+  background: #f8fafc;
+}
+
+.table-action-pay {
+  color: #146c43;
+  border-color: rgba(20, 108, 67, 0.28);
+  background: #ecfdf3;
+}
+
+.table-action-pay:hover,
+.table-action-pay:focus {
+  color: #fff;
+  border-color: #198754;
+  background: #198754;
 }
 
 .table-action-delete:hover,
@@ -703,6 +726,23 @@ a:focus {
   background: #fff;
 }
 
+.app-content td a.table-action {
+  margin: 2px 3px;
+}
+
+.app-content td a.table-action-pay {
+  color: #146c43;
+  border-color: rgba(20, 108, 67, 0.28);
+  background: #ecfdf3;
+}
+
+.app-content td a.table-action-pay:hover,
+.app-content td a.table-action-pay:focus {
+  color: #fff;
+  border-color: #198754;
+  background: #198754;
+}
+
 .table {
   margin: 0;
   vertical-align: middle;
@@ -716,13 +756,16 @@ a:focus {
   width: 100%;
   min-width: 760px;
   overflow: hidden;
+  border-collapse: separate;
+  border-spacing: 0;
 }
 
 .app-content table.table thead th {
-  padding: 16px;
-  color: #20252d;
+  padding: 15px 16px;
+  color: #1f2933;
   border: 0;
-  background: #f3f5f7;
+  border-bottom: 1px solid #d8dde3;
+  background: #eef1f4;
   font-size: 0.78rem;
   font-weight: 900;
   letter-spacing: 0.04rem;
@@ -731,13 +774,18 @@ a:focus {
 }
 
 .app-content table.table tbody td {
-  padding: 14px 16px;
+  padding: 16px;
   color: #344054;
   border-color: #eef0f2;
+  line-height: 1.45;
+}
+
+.app-content table.table tbody tr:nth-child(even) {
+  background: #fbfbfc;
 }
 
 .app-content table.table tbody tr:hover {
-  background: #fff7f5;
+  background: #fff4f1;
 }
 
 .app-content .row {
@@ -767,6 +815,25 @@ a:focus {
 
 .form-grid.two-columns {
   grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.payment-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(300px, 420px);
+  gap: 18px;
+  align-items: start;
+}
+
+.payment-summary,
+.payment-form {
+  max-width: none;
+}
+
+.payment-summary h2 {
+  margin: 16px 0 0;
+  color: #20252d;
+  font-size: 1rem;
+  font-weight: 900;
 }
 
 .form-section-title {
@@ -999,11 +1066,13 @@ dl.row dd {
   .metric-grid,
   .module-grid,
   .tool-detail-layout,
-  .report-grid {
+  .report-grid,
+  .payment-layout {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
-  .tool-detail-layout {
+  .tool-detail-layout,
+  .payment-layout {
     grid-template-columns: 1fr;
   }
 }
