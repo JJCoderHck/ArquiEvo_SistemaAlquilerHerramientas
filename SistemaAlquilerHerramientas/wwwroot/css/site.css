@@ -541,6 +541,15 @@ a:focus {
   object-fit: cover;
 }
 
+.tool-thumb {
+  width: 76px;
+  height: 58px;
+  display: block;
+  object-fit: cover;
+  border: 1px solid var(--line);
+  background: #f3f5f7;
+}
+
 .danger-shell {
   border-color: rgba(192, 57, 43, 0.28);
   background: #fffafa;

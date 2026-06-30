@@ -14,7 +14,7 @@
 <div class="form-shell">
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="Edit">
+        <form asp-action="Edit" enctype="multipart/form-data">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="IdHerramienta" />
             <div class="form-group">
@@ -46,6 +46,15 @@
                 <label asp-for="IdProveedor" class="control-label"></label>
                 <select asp-for="IdProveedor" class="form-control" asp-items="ViewBag.IdProveedor"></select>
                 <span asp-validation-for="IdProveedor" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label for="nombreImagen" class="control-label">Nombre de imagen</label>
+                <input id="nombreImagen" name="nombreImagen" class="form-control" placeholder="Ejemplo: taladro-bosch" />
+            </div>
+            <div class="form-group">
+                <label for="imagenProducto" class="control-label">Nueva imagen del producto</label>
+                <input id="imagenProducto" name="imagenProducto" type="file" class="form-control" accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp" />
+                <span class="text-danger">@Html.ValidationMessage("imagenProducto")</span>
             </div>
             <div class="form-group">
                 <input type="submit" value="Guardar" class="btn btn-primary" />

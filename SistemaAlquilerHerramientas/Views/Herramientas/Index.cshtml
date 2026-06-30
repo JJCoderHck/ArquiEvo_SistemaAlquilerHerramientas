@@ -24,6 +24,9 @@
     <thead>
         <tr>
             <th>
+                Imagen
+            </th>
+            <th>
                 @Html.DisplayNameFor(model => model.Nombre)
             </th>
             <th>
@@ -48,6 +51,11 @@
 @foreach (var item in Model) {
         <tr>
             <td>
+                <img class="tool-thumb"
+                     src="@Url.Action("Imagen", "Herramientas", new { id = item.IdHerramienta })"
+                     alt="Imagen de @item.Nombre" />
+            </td>
+            <td>
                 @Html.DisplayFor(modelItem => item.Nombre)
             </td>
             <td>
@@ -60,10 +68,10 @@
                 @Html.DisplayFor(modelItem => item.EstadoHerramienta)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.IdCategoriaNavigation.IdCategoria)
+                @(item.IdCategoriaNavigation?.NombreCategoria ?? item.IdCategoria.ToString())
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.IdProveedorNavigation.IdProveedor)
+                @(item.IdProveedorNavigation?.RazonSocial ?? item.IdProveedor.ToString())
             </td>
             <td>
                 @if (esAdministrador)

@@ -2,8 +2,7 @@
 
 @{
     ViewData["Title"] = "Detalle de herramienta";
-    var imagenHerramienta = Url.Content($"~/images/herramientas/{Model.IdHerramienta}.png");
-    var imagenDefault = Url.Content("~/images/no-image.png");
+    var imagenHerramienta = Url.Action("Imagen", "Herramientas", new { id = Model.IdHerramienta });
 }
 
 <div class="view-head compact">
@@ -45,8 +44,7 @@
 
         <aside class="tool-image-panel" aria-label="Imagen de herramienta">
             <img src="@imagenHerramienta"
-                 alt="Imagen de @Model.Nombre"
-                 onerror="this.onerror=null;this.src='@imagenDefault';" />
+                 alt="Imagen de @Model.Nombre" />
         </aside>
     </div>
 </div>
