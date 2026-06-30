@@ -1,0 +1,331 @@
+﻿@{
+    ViewData["Title"] = "Acceso Denegado";
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>HerraTools - Acceso Denegado</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <style>
+        :root {
+            --brand: #e95545;
+            --brand-dark: #20252d;
+            --ink: #1f2933;
+            --muted: #6b7280;
+            --surface: rgba(255, 255, 255, 0.92);
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            min-height: 100vh;
+            margin: 0;
+            color: var(--ink);
+            background: #f7f7f5;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        .topbar {
+            height: 88px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 28px;
+            padding: 0 44px;
+            background: rgba(255, 255, 255, 0.96);
+            border-bottom: 1px solid rgba(31, 41, 51, 0.08);
+            position: relative;
+            z-index: 5;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: #111827;
+            text-decoration: none;
+        }
+
+        .brand-symbol {
+            width: 54px;
+            height: 34px;
+            position: relative;
+            flex: 0 0 54px;
+        }
+
+        .brand-symbol::before,
+        .brand-symbol::after {
+            content: "";
+            position: absolute;
+            top: 8px;
+            width: 25px;
+            height: 25px;
+            transform: rotate(45deg);
+            border-radius: 2px;
+        }
+
+        .brand-symbol::before {
+            left: 2px;
+            background: var(--brand-dark);
+        }
+
+        .brand-symbol::after {
+            left: 22px;
+            background: var(--brand);
+        }
+
+        .brand-name {
+            display: block;
+            font-size: 1.65rem;
+            font-weight: 900;
+            line-height: 0.9;
+        }
+
+        .brand-tagline {
+            display: block;
+            margin-top: 5px;
+            font-size: 0.7rem;
+            font-weight: 800;
+            color: #111827;
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: clamp(18px, 3vw, 54px);
+            margin: 0;
+            padding: 0;
+            list-style: none;
+            font-size: 0.92rem;
+        }
+
+        .nav-links a {
+            color: #2f3742;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .hero {
+            min-height: calc(100vh - 88px);
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) 430px;
+            gap: 64px;
+            align-items: start;
+            padding: 110px max(44px, calc((100vw - 1180px) / 2)) 70px;
+            background:
+                linear-gradient(90deg, rgba(248, 249, 249, 0.95) 0%, rgba(248, 249, 249, 0.8) 42%, rgba(248, 249, 249, 0.36) 100%),
+                url("https://images.unsplash.com/photo-1504917595217-d4dc5ebe6122?auto=format&fit=crop&w=1800&q=80");
+            background-position: center;
+            background-size: cover;
+            position: relative;
+        }
+
+        .hero::after {
+            content: "";
+            position: absolute;
+            inset: auto 0 0;
+            height: 130px;
+            background: linear-gradient(180deg, transparent, rgba(255, 255, 255, 0.96));
+            pointer-events: none;
+        }
+
+        .hero-copy,
+        .denied-card {
+            position: relative;
+            z-index: 2;
+        }
+
+        .eyebrow {
+            color: var(--brand);
+            font-size: 0.78rem;
+            font-weight: 900;
+            letter-spacing: 0.08rem;
+            text-transform: uppercase;
+        }
+
+        .hero h1 {
+            max-width: 560px;
+            margin: 16px 0 14px;
+            color: #20252d;
+            font-size: clamp(2.55rem, 5vw, 4.6rem);
+            font-weight: 900;
+            line-height: 1.02;
+        }
+
+        .hero-copy p {
+            max-width: 500px;
+            margin: 0;
+            color: #303846;
+            font-size: 1.08rem;
+            font-weight: 700;
+            line-height: 1.45;
+        }
+
+        .denied-card {
+            margin-top: 24px;
+            padding: 42px;
+            background: var(--surface);
+            border: 1px solid rgba(31, 41, 51, 0.12);
+            box-shadow: 0 22px 50px rgba(17, 24, 39, 0.16);
+            backdrop-filter: blur(8px);
+        }
+
+        .status-code {
+            color: var(--brand);
+            font-size: 0.82rem;
+            font-weight: 900;
+            letter-spacing: 0.08rem;
+            text-transform: uppercase;
+        }
+
+        .denied-card h2 {
+            margin: 12px 0 10px;
+            color: #20252d;
+            font-size: 1.6rem;
+            font-weight: 900;
+        }
+
+        .denied-card p {
+            margin: 0 0 28px;
+            color: var(--muted);
+            line-height: 1.6;
+        }
+
+        .actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .primary-action,
+        .secondary-action {
+            min-height: 48px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 0;
+            padding: 0 22px;
+            font-weight: 900;
+            text-decoration: none;
+        }
+
+        .primary-action {
+            color: #fff;
+            background: #ef8e86;
+        }
+
+        .primary-action:hover,
+        .primary-action:focus {
+            color: #fff;
+            background: var(--brand);
+        }
+
+        .secondary-action {
+            color: #20252d;
+            border: 1px solid #d0d5dd;
+            background: rgba(255, 255, 255, 0.72);
+        }
+
+        .secondary-action:hover,
+        .secondary-action:focus {
+            color: #20252d;
+            border-color: #20252d;
+        }
+
+        @@media (max-width: 980px) {
+            .topbar {
+                height: auto;
+                min-height: 78px;
+                padding: 18px 24px;
+                flex-wrap: wrap;
+            }
+
+            .nav-links {
+                width: 100%;
+                justify-content: center;
+                gap: 20px;
+            }
+
+            .hero {
+                min-height: auto;
+                grid-template-columns: 1fr;
+                gap: 34px;
+                padding: 64px 24px 48px;
+            }
+
+            .denied-card {
+                width: min(100%, 500px);
+                margin-top: 0;
+            }
+        }
+
+        @@media (max-width: 620px) {
+            .nav-links {
+                display: none;
+            }
+
+            .brand-name {
+                font-size: 1.35rem;
+            }
+
+            .hero {
+                padding: 46px 18px 36px;
+            }
+
+            .hero h1 {
+                font-size: 2.35rem;
+            }
+
+            .denied-card {
+                padding: 28px 22px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="topbar">
+        <a class="brand" asp-controller="Home" asp-action="Dashboard" aria-label="Ir al dashboard de HerraTools">
+            <span class="brand-symbol" aria-hidden="true"></span>
+            <span>
+                <span class="brand-name">HerraTools</span>
+                <span class="brand-tagline">Alquila herramientas sin fricci&oacute;n</span>
+            </span>
+        </a>
+
+        <nav aria-label="Navegaci&oacute;n principal">
+            <ul class="nav-links">
+                <li><a asp-controller="Home" asp-action="Dashboard">Inicio</a></li>
+                <li><a asp-controller="Account" asp-action="Login">Cambiar usuario</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main class="hero">
+        <section class="hero-copy">
+            <span class="eyebrow">Permiso requerido</span>
+            <h1>Esta zona est&aacute; protegida.</h1>
+            <p>Tu usuario no tiene autorizaci&oacute;n para abrir esta secci&oacute;n. Puedes volver al inicio o iniciar sesi&oacute;n con una cuenta que tenga los permisos necesarios.</p>
+        </section>
+
+        <section class="denied-card" aria-label="Mensaje de acceso denegado">
+            <span class="status-code">Acceso denegado</span>
+            <h2>No tienes permisos suficientes</h2>
+            <p>Si crees que deber&iacute;as poder entrar, solicita a un administrador que revise tu rol dentro de HerraTools.</p>
+
+            <div class="actions">
+                <a asp-controller="Home" asp-action="Dashboard" class="primary-action">Volver al inicio</a>
+                <a asp-controller="Account" asp-action="Login" class="secondary-action">Cambiar usuario</a>
+            </div>
+        </section>
+    </main>
+
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
+

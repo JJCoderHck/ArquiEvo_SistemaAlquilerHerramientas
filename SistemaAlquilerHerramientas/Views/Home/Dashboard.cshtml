@@ -1,0 +1,39 @@
+﻿@{
+    ViewData["Title"] = "Dashboard";
+}
+
+<div class="dashboard-head">
+    <span class="eyebrow">Dashboard</span>
+    <h1>Centro de control</h1>
+    <p>Usa estos accesos para moverte rapido por las operaciones principales del sistema de alquiler.</p>
+</div>
+
+<div class="module-grid">
+    <a class="module-card" asp-controller="Herramientas" asp-action="Index">
+        <strong>@(User.IsInRole("Administrador") ? "Inventario" : "Catalogo")</strong>
+        <span>@(User.IsInRole("Administrador") ? "Herramientas disponibles y estados" : "Herramientas disponibles para reservar")</span>
+    </a>
+    <a class="module-card" asp-controller="Reserva" asp-action="Index">
+        <strong>Reservas</strong>
+        <span>Solicitudes programadas</span>
+    </a>
+    @if (User.IsInRole("Administrador"))
+    {
+        <a class="module-card" asp-controller="Alquilers" asp-action="Index">
+            <strong>Alquileres</strong>
+            <span>Operaciones activas</span>
+        </a>
+        <a class="module-card" asp-controller="Devolucion" asp-action="Index">
+            <strong>Devoluciones</strong>
+            <span>Cierre de entregas</span>
+        </a>
+    }
+    else
+    {
+        <a class="module-card" asp-controller="Mora" asp-action="Index">
+            <strong>Moras</strong>
+            <span>Retrasos pendientes y pagos</span>
+        </a>
+    }
+</div>
+

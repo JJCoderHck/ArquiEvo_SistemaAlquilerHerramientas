@@ -1,0 +1,44 @@
+﻿@model SistemaAlquilerHerramientas.Models.CategoriaHerramientum
+
+@{
+    ViewData["Title"] = "Eliminar categoria";
+}
+
+<div class="view-head compact danger-head">
+    <div>
+        <span class="eyebrow">Confirmacion</span>
+        <h1>Eliminar categoria</h1>
+        <p>Revisa los datos antes de confirmar la eliminacion. Esta accion afectara el registro seleccionado.</p>
+    </div>
+</div>
+
+<div class="detail-shell danger-shell">
+    <dl class="row">
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.NombreCategoria)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.NombreCategoria)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Descripcion)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Descripcion)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Estado)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Estado)
+        </dd>
+    </dl>
+</div>
+<form asp-action="Delete" class="view-actions danger-actions">
+        <input type="hidden" asp-for="IdCategoria" />
+        <input type="submit" value="Eliminar" class="btn btn-danger" />
+        <a asp-action="Index">Volver al listado</a>
+            <a asp-controller="Home" asp-action="Dashboard">Volver al inicio</a>
+    </form>
+
+

@@ -1,0 +1,91 @@
+﻿@model IEnumerable<SistemaAlquilerHerramientas.Models.Herramientum>
+
+@{
+    var esAdministrador = User.IsInRole("Administrador");
+    ViewData["Title"] = esAdministrador ? "Herramientas" : "Catalogo de herramientas";
+}
+
+<div class="view-head">
+    <div>
+        <span class="eyebrow">@(esAdministrador ? "Listado" : "Catalogo")</span>
+        <h1>@(esAdministrador ? "Herramientas" : "Catalogo de herramientas")</h1>
+        <p>@(esAdministrador ? "Gestiona inventario, disponibilidad, proveedor y precio diario." : "Consulta las herramientas disponibles antes de crear tu reserva.")</p>
+    </div>
+    <div class="view-actions">
+        <a asp-controller="Home" asp-action="Dashboard">Volver al inicio</a>
+        @if (esAdministrador)
+        {
+            <a asp-action="Create" class="btn btn-primary">Nuevo registro</a>
+        }
+    </div>
+</div>
+<div class="table-shell">
+<table class="table app-table">
+    <thead>
+        <tr>
+            <th>
+                Imagen
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Nombre)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Descripcion)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.PrecioPorDia)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.EstadoHerramienta)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.IdCategoriaNavigation)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.IdProveedorNavigation)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                <img class="tool-thumb"
+                     src="@Url.Action("Imagen", "Herramientas", new { id = item.IdHerramienta })"
+                     alt="Imagen de @item.Nombre" />
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Nombre)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Descripcion)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.PrecioPorDia)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.EstadoHerramienta)
+            </td>
+            <td>
+                @(item.IdCategoriaNavigation?.NombreCategoria ?? item.IdCategoria.ToString())
+            </td>
+            <td>
+                @(item.IdProveedorNavigation?.RazonSocial ?? item.IdProveedor.ToString())
+            </td>
+            <td>
+                @if (esAdministrador)
+                {
+                    <a class="table-action table-action-edit" asp-action="Edit" asp-route-id="@item.IdHerramienta">Editar</a> <a class="table-action table-action-view" asp-action="Details" asp-route-id="@item.IdHerramienta">Ver</a> <a class="table-action table-action-delete" asp-action="Delete" asp-route-id="@item.IdHerramienta">Eliminar</a>
+                }
+                else
+                {
+                    <a class="table-action table-action-view" asp-action="Details" asp-route-id="@item.IdHerramienta">Ver</a>
+                }
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
+</div>
+

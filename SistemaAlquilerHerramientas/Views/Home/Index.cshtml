@@ -1,8 +1,73 @@
 ﻿@{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "Inicio";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome Julio</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<div class="dashboard-head">
+    <span class="eyebrow">Resumen operativo</span>
+    <h1>Bienvenido a HerraTools</h1>
+    <p>Administra el flujo completo de alquiler: inventario disponible, reservas activas, entregas, devoluciones y control de moras.</p>
 </div>
+
+<div class="metric-grid">
+    <article class="metric-card">
+        <span>01</span>
+        <h2>Herramientas</h2>
+        <p>Consulta y mantiene el inventario disponible para alquiler.</p>
+    </article>
+    <article class="metric-card">
+        <span>02</span>
+        <h2>Reservas</h2>
+        <p>Organiza solicitudes antes de convertirlas en alquileres.</p>
+    </article>
+    <article class="metric-card">
+        <span>03</span>
+        <h2>Devoluciones</h2>
+        <p>Registra retornos, estados y observaciones del equipo.</p>
+    </article>
+</div>
+
+<div class="module-grid">
+    <a class="module-card" asp-controller="Herramientas" asp-action="Index">
+        <strong>@(User.IsInRole("Administrador") ? "Herramientas" : "Catalogo")</strong>
+        <span>@(User.IsInRole("Administrador") ? "Inventario y precios por dia" : "Herramientas disponibles para reservar")</span>
+    </a>
+    <a class="module-card" asp-controller="Reserva" asp-action="Index">
+        <strong>Reservas</strong>
+        <span>Fechas y disponibilidad</span>
+    </a>
+    @if (User.IsInRole("Administrador"))
+    {
+        <a class="module-card" asp-controller="Alquilers" asp-action="Index">
+            <strong>Alquileres</strong>
+            <span>Entregas y montos estimados</span>
+        </a>
+        <a class="module-card" asp-controller="Devolucion" asp-action="Index">
+            <strong>Devoluciones</strong>
+            <span>Retornos y observaciones</span>
+        </a>
+        <a class="module-card" asp-controller="Clientes" asp-action="Index">
+            <strong>Clientes</strong>
+            <span>Datos de contacto y estado</span>
+        </a>
+        <a class="module-card" asp-controller="Proveedor" asp-action="Index">
+            <strong>Proveedores</strong>
+            <span>Empresas y abastecimiento</span>
+        </a>
+        <a class="module-card" asp-controller="Usuario" asp-action="Index">
+            <strong>Usuarios</strong>
+            <span>Accesos y roles del sistema</span>
+        </a>
+        <a class="module-card" asp-controller="Mora" asp-action="Index">
+            <strong>Moras</strong>
+            <span>Retrasos y pagos pendientes</span>
+        </a>
+    }
+    else
+    {
+        <a class="module-card" asp-controller="Mora" asp-action="Index">
+            <strong>Moras</strong>
+            <span>Consulta retrasos y pagos pendientes</span>
+        </a>
+    }
+</div>
+

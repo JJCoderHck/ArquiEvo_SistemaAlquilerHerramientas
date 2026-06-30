@@ -1,0 +1,66 @@
+﻿@model SistemaAlquilerHerramientas.Models.Mora
+
+@{
+    var esCliente = User.IsInRole("Cliente");
+    var estaPagada = string.Equals(Model.EstadoPago, "Pagado", System.StringComparison.OrdinalIgnoreCase);
+    ViewData["Title"] = "Detalle de mora";
+}
+
+<div class="view-head compact">
+    <div>
+        <span class="eyebrow">Detalle</span>
+        <h1>Detalle de mora</h1>
+        <p>Consulta la informacion registrada sin modificar los datos.</p>
+    </div>
+</div>
+
+<div class="detail-shell">
+    <dl class="row">
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.DiasRetraso)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.DiasRetraso)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.MontoMora)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.MontoMora)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.EstadoPago)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.EstadoPago)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.IdAlquilerNavigation)
+        </dt>
+        <dd class = "col-sm-10">
+            #@Model.IdAlquilerNavigation.IdAlquiler
+        </dd>
+        <dt class="col-sm-2">
+            Cliente
+        </dt>
+        <dd class="col-sm-10">
+            @(Model.IdAlquilerNavigation.IdClienteNavigation?.Nombres) @(Model.IdAlquilerNavigation.IdClienteNavigation?.Apellidos)
+        </dd>
+        <dt class="col-sm-2">
+            Herramienta
+        </dt>
+        <dd class="col-sm-10">
+            @(Model.IdAlquilerNavigation.IdHerramientaNavigation?.Nombre ?? "Sin herramienta")
+        </dd>
+    </dl>
+</div>
+<div class="view-actions">
+        <a asp-controller="Home" asp-action="Dashboard">Volver al inicio</a>
+    @if (esCliente && !estaPagada)
+    {
+        <a class="table-action table-action-pay" asp-action="Pagar" asp-route-id="@Model.IdMora">Pagar mora</a>
+    }
+    <a asp-action="Index">Volver al listado</a>
+</div>
+
+

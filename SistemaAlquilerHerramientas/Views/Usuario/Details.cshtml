@@ -1,0 +1,60 @@
+﻿@model SistemaAlquilerHerramientas.Models.Usuario
+
+@{
+    ViewData["Title"] = "Detalle de usuario";
+}
+
+<div class="view-head compact">
+    <div>
+        <span class="eyebrow">Detalle</span>
+        <h1>Detalle de usuario</h1>
+        <p>Consulta la informacion registrada sin modificar los datos.</p>
+    </div>
+</div>
+
+<div class="detail-shell">
+    <dl class="row">
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Nombre)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Nombre)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Correo)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Correo)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Usuario1)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Usuario1)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Contrasena)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Contrasena)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Estado)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Estado)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.IdRolNavigation)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.IdRolNavigation.IdRol)
+        </dd>
+    </dl>
+</div>
+<div class="view-actions">
+        <a asp-controller="Home" asp-action="Dashboard">Volver al inicio</a>
+    <a class="table-action table-action-edit" asp-action="Edit" asp-route-id="@Model?.IdUsuario">Editar</a> <a asp-action="Index">Volver al listado</a>
+</div>
+
+

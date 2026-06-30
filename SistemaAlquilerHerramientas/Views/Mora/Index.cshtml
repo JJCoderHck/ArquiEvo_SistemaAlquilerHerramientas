@@ -1,0 +1,76 @@
+﻿@model IEnumerable<SistemaAlquilerHerramientas.Models.Mora>
+
+@{
+    var esCliente = User.IsInRole("Cliente");
+    ViewData["Title"] = "Moras";
+}
+
+<div class="view-head">
+    <div>
+        <span class="eyebrow">Listado</span>
+        <h1>Moras</h1>
+        <p>Revisa retrasos, montos pendientes y estado de pago.</p>
+    </div>
+    <div class="view-actions">
+        <a asp-controller="Home" asp-action="Dashboard">Volver al inicio</a>
+    </div>
+</div>
+<div class="table-shell">
+<table class="table app-table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.DiasRetraso)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.MontoMora)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.EstadoPago)
+            </th>
+            <th>
+                Alquiler
+            </th>
+            <th>
+                Cliente
+            </th>
+            <th>
+                Herramienta
+            </th>
+            <th>Acciones</th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.DiasRetraso)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.MontoMora)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.EstadoPago)
+            </td>
+            <td>
+                #@item.IdAlquilerNavigation.IdAlquiler
+            </td>
+            <td>
+                @(item.IdAlquilerNavigation.IdClienteNavigation?.Nombres) @(item.IdAlquilerNavigation.IdClienteNavigation?.Apellidos)
+            </td>
+            <td>
+                @(item.IdAlquilerNavigation.IdHerramientaNavigation?.Nombre ?? "Sin herramienta")
+            </td>
+            <td>
+                <a class="table-action table-action-view" asp-action="Details" asp-route-id="@item.IdMora">Ver</a>
+                @if (esCliente && !string.Equals(item.EstadoPago, "Pagado", System.StringComparison.OrdinalIgnoreCase))
+                {
+                    <a class="table-action table-action-pay" asp-action="Pagar" asp-route-id="@item.IdMora">Pagar</a>
+                }
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
+</div>
+

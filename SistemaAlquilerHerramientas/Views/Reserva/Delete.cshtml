@@ -1,0 +1,114 @@
+﻿@model SistemaAlquilerHerramientas.Models.Reserva
+
+@{
+    var esAdministrador = User.IsInRole("Administrador");
+    var alquileresAsociados = ViewData["AlquileresAsociados"] as System.Collections.Generic.IEnumerable<SistemaAlquilerHerramientas.Models.Alquiler>
+        ?? System.Linq.Enumerable.Empty<SistemaAlquilerHerramientas.Models.Alquiler>();
+    var tieneAlquileresAsociados = System.Linq.Enumerable.Any(alquileresAsociados);
+    ViewData["Title"] = "Eliminar reserva";
+}
+
+@if (!esAdministrador)
+{
+    <div class="view-head compact danger-head">
+        <div>
+            <span class="eyebrow">Acceso restringido</span>
+            <h1>Reserva no eliminable</h1>
+            <p>Los clientes pueden crear y consultar reservas, pero no eliminarlas.</p>
+        </div>
+    </div>
+    <div class="view-actions">
+        <a asp-controller="Home" asp-action="Dashboard">Volver al inicio</a>
+    <a asp-action="Index">Volver al listado</a></div>
+}
+else
+{
+<div class="view-head compact danger-head">
+    <div>
+        <span class="eyebrow">Confirmacion</span>
+        <h1>Eliminar reserva</h1>
+        <p>Revisa los datos antes de confirmar la eliminacion. Esta accion afectara el registro seleccionado.</p>
+    </div>
+</div>
+
+@if (TempData["ErrorMessage"] != null || tieneAlquileresAsociados)
+{
+    <div class="app-alert app-alert-danger">
+        No se puede eliminar la reserva porque tiene un alquiler asociado. Primero elimina el alquiler, o usa la opcion para eliminar el alquiler asociado y la reserva.
+    </div>
+
+    @if (tieneAlquileresAsociados)
+    {
+        <div class="associated-records">
+            <strong>Alquiler asociado</strong>
+            @foreach (var alquiler in alquileresAsociados)
+            {
+                <span>
+                    Alquiler #@alquiler.IdAlquiler -
+                    @(alquiler.IdHerramientaNavigation?.Nombre ?? "Herramienta sin nombre") -
+                    @((alquiler.MontoEstimado ?? 0).ToString("0.00"))
+                </span>
+            }
+        </div>
+    }
+}
+
+<div class="detail-shell danger-shell">
+    <dl class="row">
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.FechaInicio)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.FechaInicio)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.FechaDevolucionEstimada)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.FechaDevolucionEstimada)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.EstadoReserva)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.EstadoReserva)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.FechaRegistro)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.FechaRegistro)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.IdClienteNavigation)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.IdClienteNavigation.IdCliente)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.IdHerramientaNavigation)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.IdHerramientaNavigation.IdHerramienta)
+        </dd>
+    </dl>
+</div>
+@if (tieneAlquileresAsociados)
+{
+    <form asp-action="DeleteWithAlquileres" class="view-actions danger-actions">
+        <input type="hidden" asp-for="IdReserva" />
+        <input type="submit" value="Eliminar alquiler asociado y reserva" class="btn btn-danger" />
+        <a asp-action="Index">Volver al listado</a>
+    </form>
+}
+else
+{
+    <form asp-action="Delete" class="view-actions danger-actions">
+        <input type="hidden" asp-for="IdReserva" />
+        <input type="submit" value="Eliminar" class="btn btn-danger" />
+        <a asp-action="Index">Volver al listado</a>
+    </form>
+}
+}
+
+

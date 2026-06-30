@@ -1,0 +1,84 @@
+﻿@model IEnumerable<SistemaAlquilerHerramientas.Models.Reserva>
+
+@{
+    var esAdministrador = User.IsInRole("Administrador");
+    var correoUsuario = User.Claims.FirstOrDefault(c => c.Type == System.Security.Claims.ClaimTypes.Email)?.Value ?? User.Identity?.Name;
+    var reservasVisibles = esAdministrador
+        ? Model
+        : Model.Where(item => !string.IsNullOrWhiteSpace(correoUsuario) && string.Equals(item.IdClienteNavigation?.Correo, correoUsuario, System.StringComparison.OrdinalIgnoreCase));
+    ViewData["Title"] = "Reservas";
+}
+
+<div class="view-head">
+    <div>
+        <span class="eyebrow">@(esAdministrador ? "Listado" : "Mis reservas")</span>
+        <h1>Reservas</h1>
+        <p>@(esAdministrador ? "Programa solicitudes, fechas estimadas y disponibilidad." : "Consulta tus solicitudes registradas y crea nuevas reservas.")</p>
+    </div>
+    <div class="view-actions">
+        <a asp-controller="Home" asp-action="Dashboard">Volver al inicio</a>
+        <a asp-action="Create" class="btn btn-primary">Nueva reserva</a>
+    </div>
+</div>
+<div class="table-shell">
+<table class="table app-table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.FechaInicio)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FechaDevolucionEstimada)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.EstadoReserva)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FechaRegistro)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.IdClienteNavigation)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.IdHerramientaNavigation)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in reservasVisibles) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.FechaInicio)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.FechaDevolucionEstimada)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.EstadoReserva)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.FechaRegistro)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.IdClienteNavigation.IdCliente)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.IdHerramientaNavigation.IdHerramienta)
+            </td>
+            <td>
+                @if (esAdministrador)
+                {
+                    <a class="table-action table-action-edit" asp-action="Edit" asp-route-id="@item.IdReserva">Editar</a> <a class="table-action table-action-view" asp-action="Details" asp-route-id="@item.IdReserva">Ver</a> <a class="table-action table-action-delete" asp-action="Delete" asp-route-id="@item.IdReserva">Eliminar</a>
+                }
+                else
+                {
+                    <a class="table-action table-action-view" asp-action="Details" asp-route-id="@item.IdReserva">Ver</a>
+                }
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
+</div>
+

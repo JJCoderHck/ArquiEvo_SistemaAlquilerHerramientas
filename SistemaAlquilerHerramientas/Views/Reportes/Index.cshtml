@@ -1,0 +1,73 @@
+﻿@{
+    ViewData["Title"] = "Reportes";
+}
+
+<div class="view-head">
+    <div>
+        <span class="eyebrow">Administracion</span>
+        <h1>Reportes</h1>
+        <p>Genera archivos PDF con informacion real registrada en la base de datos.</p>
+    </div>
+</div>
+
+<div class="report-grid">
+    <article class="report-card">
+        <div>
+            <span>Inventario</span>
+            <h2>Herramientas disponibles</h2>
+            <p>Listado de herramientas marcadas como disponibles.</p>
+        </div>
+        <a class="report-download" asp-action="HerramientasDisponibles">
+            <span>PDF</span>
+            Generar reporte
+        </a>
+    </article>
+    <article class="report-card">
+        <div>
+            <span>Operacion</span>
+            <h2>Alquileres activos</h2>
+            <p>Alquileres que aun no figuran como cerrados o devueltos.</p>
+        </div>
+        <a class="report-download" asp-action="AlquileresActivos">
+            <span>PDF</span>
+            Generar reporte
+        </a>
+    </article>
+    <article class="report-card">
+        <div>
+            <span>Solicitudes</span>
+            <h2>Reservas</h2>
+            <p>Reservas registradas con cliente, herramienta y estado.</p>
+        </div>
+        <a class="report-download" asp-action="Reservas">
+            <span>PDF</span>
+            Generar reporte
+        </a>
+    </article>
+    <article class="report-card">
+        <div>
+            <span>Retornos</span>
+            <h2>Devoluciones</h2>
+            <p>Devoluciones registradas y estado de retorno.</p>
+        </div>
+        <a class="report-download" asp-action="Devoluciones">
+            <span>PDF</span>
+            Generar reporte
+        </a>
+    </article>
+    <article class="report-card">
+        <div>
+            <span>Cobranza</span>
+            <h2>Moras</h2>
+            <p>Moras calculadas por alquiler, dias de retraso y estado de pago.</p>
+        </div>
+        <a class="report-download" asp-action="Moras">
+            <span>PDF</span>
+            Generar reporte
+        </a>
+    </article>
+</div>
+
+<div class="view-actions">
+        <a asp-controller="Home" asp-action="Dashboard">Volver al inicio</a>
+</div>

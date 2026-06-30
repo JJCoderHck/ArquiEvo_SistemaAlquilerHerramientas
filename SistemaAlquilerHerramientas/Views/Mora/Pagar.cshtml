@@ -1,0 +1,66 @@
+@model SistemaAlquilerHerramientas.Models.Mora
+
+@{
+    ViewData["Title"] = "Pagar mora";
+}
+
+<div class="view-head compact">
+    <div>
+        <span class="eyebrow">Pago</span>
+        <h1>Pagar mora</h1>
+        <p>Registra el pago de la mora pendiente para actualizar su estado.</p>
+    </div>
+</div>
+
+<div class="payment-layout">
+    <section class="detail-shell payment-summary">
+        <h2>Resumen</h2>
+        <dl class="row">
+            <dt class="col-sm-2">Alquiler</dt>
+            <dd class="col-sm-10">#@Model.IdAlquilerNavigation.IdAlquiler</dd>
+            <dt class="col-sm-2">Cliente</dt>
+            <dd class="col-sm-10">@(Model.IdAlquilerNavigation.IdClienteNavigation?.Nombres) @(Model.IdAlquilerNavigation.IdClienteNavigation?.Apellidos)</dd>
+            <dt class="col-sm-2">Herramienta</dt>
+            <dd class="col-sm-10">@(Model.IdAlquilerNavigation.IdHerramientaNavigation?.Nombre ?? "Sin herramienta")</dd>
+            <dt class="col-sm-2">Dias retraso</dt>
+            <dd class="col-sm-10">@Model.DiasRetraso</dd>
+            <dt class="col-sm-2">Monto</dt>
+            <dd class="col-sm-10">@Model.MontoMora.ToString("0.00")</dd>
+        </dl>
+    </section>
+
+    <section class="form-shell payment-form">
+        <form asp-action="Pagar" asp-route-id="@Model.IdMora" method="post">
+            <div asp-validation-summary="All" class="text-danger"></div>
+            <div class="form-group">
+                <label for="titularTarjeta" class="control-label">Titular de la tarjeta</label>
+                <input id="titularTarjeta" name="titularTarjeta" class="form-control" autocomplete="cc-name" />
+            </div>
+            <div class="form-group">
+                <label for="numeroTarjeta" class="control-label">Numero de tarjeta</label>
+                <input id="numeroTarjeta" name="numeroTarjeta" class="form-control" inputmode="numeric" autocomplete="cc-number" />
+            </div>
+            <div class="form-grid two-columns">
+                <div class="form-group">
+                    <label for="fechaVencimiento" class="control-label">Vencimiento</label>
+                    <input id="fechaVencimiento" name="fechaVencimiento" class="form-control" placeholder="MM/AA" autocomplete="cc-exp" />
+                </div>
+                <div class="form-group">
+                    <label for="cvv" class="control-label">CVV</label>
+                    <input id="cvv" name="cvv" class="form-control" inputmode="numeric" autocomplete="cc-csc" />
+                </div>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Pagar" class="btn btn-primary" />
+            </div>
+        </form>
+    </section>
+</div>
+
+<div class="view-actions">
+    <a asp-action="Index">Volver al listado</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

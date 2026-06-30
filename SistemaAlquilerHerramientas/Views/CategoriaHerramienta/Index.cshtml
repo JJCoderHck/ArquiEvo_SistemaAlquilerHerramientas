@@ -1,0 +1,54 @@
+﻿@model IEnumerable<SistemaAlquilerHerramientas.Models.CategoriaHerramientum>
+
+@{
+    ViewData["Title"] = "Categorias de herramientas";
+}
+
+<div class="view-head">
+    <div>
+        <span class="eyebrow">Listado</span>
+        <h1>Categorias de herramientas</h1>
+        <p>Organiza el inventario por familias de uso.</p>
+    </div>
+    <div class="view-actions">
+        <a asp-controller="Home" asp-action="Dashboard">Volver al inicio</a>
+        <a asp-action="Create" class="btn btn-primary">Nuevo registro</a>
+    </div>
+</div>
+<div class="table-shell">
+<table class="table app-table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.NombreCategoria)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Descripcion)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Estado)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.NombreCategoria)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Descripcion)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Estado)
+            </td>
+            <td>
+                <a class="table-action table-action-edit" asp-action="Edit" asp-route-id="@item.IdCategoria">Editar</a> <a class="table-action table-action-view" asp-action="Details" asp-route-id="@item.IdCategoria">Ver</a> <a class="table-action table-action-delete" asp-action="Delete" asp-route-id="@item.IdCategoria">Eliminar</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
+</div>
+

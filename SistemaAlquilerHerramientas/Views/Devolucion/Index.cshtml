@@ -1,0 +1,66 @@
+﻿@model IEnumerable<SistemaAlquilerHerramientas.Models.Devolucion>
+
+@{
+    ViewData["Title"] = "Devoluciones";
+}
+
+<div class="view-head">
+    <div>
+        <span class="eyebrow">Listado</span>
+        <h1>Devoluciones</h1>
+        <p>Registra retornos, estado del equipo y observaciones.</p>
+    </div>
+    <div class="view-actions">
+        <a asp-controller="Home" asp-action="Dashboard">Volver al inicio</a>
+        <a asp-action="Create" class="btn btn-primary">Nuevo registro</a>
+    </div>
+</div>
+<div class="table-shell">
+<table class="table app-table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.FechaDevolucionReal)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.EstadoRetorno)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Observacion)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FechaRegistro)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.IdAlquilerNavigation)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.FechaDevolucionReal)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.EstadoRetorno)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Observacion)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.FechaRegistro)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.IdAlquilerNavigation.IdAlquiler)
+            </td>
+            <td>
+                <a class="table-action table-action-edit" asp-action="Edit" asp-route-id="@item.IdDevolucion">Editar</a> <a class="table-action table-action-view" asp-action="Details" asp-route-id="@item.IdDevolucion">Ver</a> <a class="table-action table-action-delete" asp-action="Delete" asp-route-id="@item.IdDevolucion">Eliminar</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
+</div>
+

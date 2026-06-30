@@ -1,0 +1,72 @@
+﻿@model SistemaAlquilerHerramientas.Models.Alquiler
+
+@{
+    ViewData["Title"] = "Detalle de alquiler";
+}
+
+<div class="view-head compact">
+    <div>
+        <span class="eyebrow">Detalle</span>
+        <h1>Detalle de alquiler</h1>
+        <p>Consulta la informacion registrada sin modificar los datos.</p>
+    </div>
+</div>
+
+<div class="detail-shell">
+    <dl class="row">
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.FechaEntrega)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.FechaEntrega)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.FechaDevolucionPactada)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.FechaDevolucionPactada)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.MontoEstimado)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.MontoEstimado)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.EstadoAlquiler)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.EstadoAlquiler)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.FechaRegistro)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.FechaRegistro)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.IdClienteNavigation)
+        </dt>
+        <dd class = "col-sm-10">
+            @(Model.IdClienteNavigation == null ? "Sin cliente" : $"{Model.IdClienteNavigation.Nombres} {Model.IdClienteNavigation.Apellidos}")
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.IdHerramientaNavigation)
+        </dt>
+        <dd class = "col-sm-10">
+            @(Model.IdHerramientaNavigation?.Nombre ?? "Sin herramienta")
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.IdReservaNavigation)
+        </dt>
+        <dd class = "col-sm-10">
+            @(Model.IdReservaNavigation?.IdReserva.ToString() ?? "Sin reserva")
+        </dd>
+    </dl>
+</div>
+<div class="view-actions">
+        <a asp-controller="Home" asp-action="Dashboard">Volver al inicio</a>
+    <a class="table-action table-action-edit" asp-action="Edit" asp-route-id="@Model?.IdAlquiler">Editar</a> <a asp-action="Index">Volver al listado</a>
+</div>
+
+
